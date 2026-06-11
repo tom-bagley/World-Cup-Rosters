@@ -1,8 +1,13 @@
 import csv
+import hashlib
+import json
+import mimetypes
 import re
 import unicodedata
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone
-from urllib.parse import unquote
+from pathlib import Path
+from urllib.parse import unquote, urlparse
 
 import requests
 from bs4 import BeautifulSoup
@@ -10,7 +15,10 @@ from bs4 import BeautifulSoup
 
 SOURCE_URL = "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_squads"
 FIFPRO_WORLD11_URL = "https://en.wikipedia.org/wiki/FIFPRO_World_11"
+THESPORTSDB_TEAM_SEARCH_URL = "https://www.thesportsdb.com/api/v1/json/3/searchteams.php"
 OUTPUT_CSV = "world_cup_rosters.csv"
+CLUB_LOGO_CACHE = Path("club_logo_cache.json")
+CLUB_LOGO_DIR = Path("club_logo_cache")
 FIFPRO_NATIONAL_TEAM_BY_NAME = {
     "luis suarez": "Uruguay",
 }
@@ -46,6 +54,18 @@ def absolute_image_url(image_url):
     if image_url.startswith("/"):
         return f"https://en.wikipedia.org{image_url}"
     return image_url
+
+
+def absolute_wikipedia_url(link):
+    if not link:
+        return ""
+    if link.startswith("//"):
+        return f"https:{link}"
+    if link.startswith("/wiki/"):
+        return f"https://en.wikipedia.org{link}"
+    if link.startswith("http://") or link.startswith("https://"):
+        return link
+    return ""
 
 
 def infer_club_country_from_link(club_link):
@@ -101,7 +121,7 @@ def infer_club_logo_from_link(club_link):
 
     response = requests.get(
         f"https://en.wikipedia.org{club_link}",
-        timeout=20,
+        timeout=6,
         headers={"User-Agent": "WorldCupRostersCSV/0.1 (personal research project)"},
     )
     if not response.ok:
@@ -122,7 +142,94 @@ def wikipedia_title_from_link(link):
     return unquote(link.removeprefix("/wiki/"))
 
 
-def fetch_club_logos_for_links(club_links):
+def load_club_logo_cache():
+    if not CLUB_LOGO_CACHE.exists():
+        return {}
+    with CLUB_LOGO_CACHE.open("r", encoding="utf-8") as cache_file:
+        data = json.load(cache_file)
+    if not isinstance(data, dict):
+        return {}
+    return {
+        link: value
+        for link, value in data.items()
+        if isinstance(link, str) and isinstance(value, str)
+    }
+
+
+def save_club_logo_cache(cache):
+    with CLUB_LOGO_CACHE.open("w", encoding="utf-8") as cache_file:
+        json.dump(dict(sorted(cache.items())), cache_file, indent=2, ensure_ascii=False)
+        cache_file.write("\n")
+
+
+def logo_extension(url, content_type=""):
+    content_ext = mimetypes.guess_extension(content_type.split(";")[0].strip()) if content_type else ""
+    if content_ext in {".jpg", ".jpeg", ".png", ".gif", ".webp", ".svg"}:
+        return ".jpg" if content_ext == ".jpeg" else content_ext
+
+    path_ext = Path(urlparse(url).path).suffix.lower()
+    if path_ext in {".jpg", ".jpeg", ".png", ".gif", ".webp", ".svg"}:
+        return ".jpg" if path_ext == ".jpeg" else path_ext
+    return ".png"
+
+
+def local_logo_path(link, image_url, response):
+    title = wikipedia_title_from_link(link) or "club-logo"
+    slug = re.sub(r"[^a-z0-9]+", "-", title.lower()).strip("-") or "club-logo"
+    digest = hashlib.sha1(link.encode("utf-8")).hexdigest()[:10]
+    extension = logo_extension(image_url, response.headers.get("Content-Type", ""))
+    return CLUB_LOGO_DIR / f"{slug}-{digest}{extension}"
+
+
+def cache_logo_image(link, image_url):
+    if not image_url:
+        return ""
+
+    response = requests.get(
+        image_url,
+        timeout=10,
+        headers={"User-Agent": "WorldCupRostersCSV/0.1 (personal research project)"},
+    )
+    if not response.ok:
+        return ""
+
+    CLUB_LOGO_DIR.mkdir(exist_ok=True)
+    logo_path = local_logo_path(link, image_url, response)
+    logo_path.write_bytes(response.content)
+    return logo_path.as_posix()
+
+
+def sportsdb_logo_for_club(club_name):
+    if not club_name:
+        return ""
+
+    response = requests.get(
+        THESPORTSDB_TEAM_SEARCH_URL,
+        timeout=10,
+        headers={"User-Agent": "WorldCupRostersCSV/0.1 (personal research project)"},
+        params={"t": club_name},
+    )
+    if not response.ok:
+        return ""
+
+    teams = response.json().get("teams") or []
+    soccer_teams = [
+        team for team in teams
+        if clean_text(team.get("strSport", "")).lower() == "soccer"
+    ]
+    if not soccer_teams:
+        return ""
+
+    club_key = normalized_name(club_name)
+    exact_matches = [
+        team for team in soccer_teams
+        if normalized_name(team.get("strTeam", "")) == club_key
+    ]
+    return (exact_matches or soccer_teams)[0].get("strBadge", "")
+
+
+def fetch_uncached_club_logos(club_links_by_name):
+    club_links = set(club_links_by_name)
     titles_by_link = {
         link: wikipedia_title_from_link(link)
         for link in club_links
@@ -156,7 +263,75 @@ def fetch_club_logos_for_links(club_links):
         for link, title in titles_by_link.items():
             logos[link] = logo_by_title.get(title, logos.get(link, ""))
 
-    return logos
+    links_without_logos = [link for link, logo in logos.items() if not logo]
+    with ThreadPoolExecutor(max_workers=24) as executor:
+        futures = {
+            executor.submit(infer_club_logo_from_link, link): link
+            for link in links_without_logos
+        }
+        for future in as_completed(futures):
+            try:
+                logos[futures[future]] = future.result()
+            except requests.RequestException:
+                logos[futures[future]] = ""
+
+    links_without_logos = [link for link, logo in logos.items() if not logo]
+    with ThreadPoolExecutor(max_workers=12) as executor:
+        futures = {
+            executor.submit(sportsdb_logo_for_club, club_links_by_name.get(link, "")): link
+            for link in links_without_logos
+        }
+        for future in as_completed(futures):
+            try:
+                logos[futures[future]] = future.result()
+            except (requests.RequestException, ValueError):
+                logos[futures[future]] = ""
+
+    cached_logos = {link: "" for link in logos}
+    with ThreadPoolExecutor(max_workers=24) as executor:
+        futures = {
+            executor.submit(cache_logo_image, link, logo): link
+            for link, logo in logos.items()
+            if logo
+        }
+        for future in as_completed(futures):
+            try:
+                cached_logos[futures[future]] = future.result()
+            except requests.RequestException:
+                cached_logos[futures[future]] = ""
+
+    return cached_logos
+
+
+def cached_logo_exists(path):
+    return bool(path) and Path(path).exists()
+
+
+def fetch_club_logos_for_links(club_links, refresh_blank_logos=False):
+    if isinstance(club_links, dict):
+        club_links_by_name = club_links
+    else:
+        club_links_by_name = {link: "" for link in club_links}
+    club_links = set(club_links_by_name)
+    cache = load_club_logo_cache()
+    missing_links = {
+        link
+        for link in club_links
+        if (
+            link not in cache
+            or (refresh_blank_logos and not cache.get(link))
+            or (cache.get(link) and not cached_logo_exists(cache[link]))
+        )
+    }
+
+    if missing_links:
+        cache.update(fetch_uncached_club_logos({
+            link: club_links_by_name.get(link, "")
+            for link in missing_links
+        }))
+        save_club_logo_cache(cache)
+
+    return {link: cache.get(link, "") for link in club_links}
 
 
 def normalized_name(value):
@@ -247,12 +422,12 @@ def parse_rosters():
     rows = []
     fifpro_players = parse_fifpro_world11()
     club_countries = {}
-    club_links_for_logos = []
+    club_links_for_logos = {}
     for club_cell in soup.select("table.wikitable td:nth-child(7)"):
         links = club_cell.find_all("a", href=True)
         if links:
-            club_links_for_logos.append(links[-1]["href"])
-    club_logos = fetch_club_logos_for_links(set(club_links_for_logos))
+            club_links_for_logos[links[-1]["href"]] = clean_text(club_cell.get_text(" ", strip=True))
+    club_logos = fetch_club_logos_for_links(club_links_for_logos)
     current_group = ""
     retrieved_at = datetime.now(timezone.utc).isoformat(timespec="seconds")
 
@@ -277,7 +452,10 @@ def parse_rosters():
 
             number = clean_text(cells[0].get_text(" ", strip=True))
             position = parse_position(cells[1].get_text(" ", strip=True))
-            player = clean_text(cells[2].get_text(" ", strip=True)).replace(" ( captain )", "")
+            player_cell = cells[2]
+            player = clean_text(player_cell.get_text(" ", strip=True)).replace(" ( captain )", "")
+            player_link_tag = player_cell.find("a", href=True)
+            player_url = absolute_wikipedia_url(player_link_tag["href"]) if player_link_tag else ""
             birth_date, age = parse_birth_date_and_age(cells[3].get_text(" ", strip=True))
             caps = clean_text(cells[4].get_text(" ", strip=True))
             goals = clean_text(cells[5].get_text(" ", strip=True))
@@ -288,6 +466,7 @@ def parse_rosters():
             club_links = club_cell.find_all("a", href=True)
             club_link_tag = club_links[-1] if club_links else None
             club_link = club_link_tag["href"] if club_link_tag else ""
+            club_url = absolute_wikipedia_url(club_link)
             if not club_country and club_link not in club_countries:
                 club_country = infer_club_country_from_link(club_link)
                 club_countries[club_link] = club_country
@@ -310,11 +489,13 @@ def parse_rosters():
                     "squad_number": number,
                     "position": position,
                     "player": player,
+                    "player_wikipedia_url": player_url,
                     "birth_date": birth_date,
                     "age": age,
                     "caps": caps,
                     "goals": goals,
                     "professional_club": club,
+                    "professional_club_wikipedia_url": club_url,
                     "professional_club_country": club_country,
                     "professional_club_logo_url": club_logo_url,
                     "fifpro_world11_apps": fifpro.get("fifpro_world11_apps", "0"),
@@ -341,11 +522,13 @@ def main():
         "squad_number",
         "position",
         "player",
+        "player_wikipedia_url",
         "birth_date",
         "age",
         "caps",
         "goals",
         "professional_club",
+        "professional_club_wikipedia_url",
         "professional_club_country",
         "professional_club_logo_url",
         "fifpro_world11_apps",

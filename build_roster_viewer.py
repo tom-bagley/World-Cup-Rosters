@@ -67,6 +67,59 @@ TEAM_THEMES = {
 }
 
 
+TEAM_FLAG_CODES = {
+    "Algeria": "dz",
+    "Argentina": "ar",
+    "Australia": "au",
+    "Austria": "at",
+    "Belgium": "be",
+    "Bosnia and Herzegovina": "ba",
+    "Brazil": "br",
+    "Canada": "ca",
+    "Cape Verde": "cv",
+    "Colombia": "co",
+    "Croatia": "hr",
+    "CuraÃ§ao": "cw",
+    "Curaçao": "cw",
+    "Czech Republic": "cz",
+    "DR Congo": "cd",
+    "Ecuador": "ec",
+    "Egypt": "eg",
+    "England": "gb-eng",
+    "France": "fr",
+    "Germany": "de",
+    "Ghana": "gh",
+    "Haiti": "ht",
+    "Iran": "ir",
+    "Iraq": "iq",
+    "Ivory Coast": "ci",
+    "Japan": "jp",
+    "Jordan": "jo",
+    "Mexico": "mx",
+    "Morocco": "ma",
+    "Netherlands": "nl",
+    "New Zealand": "nz",
+    "Norway": "no",
+    "Panama": "pa",
+    "Paraguay": "py",
+    "Portugal": "pt",
+    "Qatar": "qa",
+    "Saudi Arabia": "sa",
+    "Scotland": "gb-sct",
+    "Senegal": "sn",
+    "South Africa": "za",
+    "South Korea": "kr",
+    "Spain": "es",
+    "Sweden": "se",
+    "Switzerland": "ch",
+    "Tunisia": "tn",
+    "Turkey": "tr",
+    "United States": "us",
+    "Uruguay": "uy",
+    "Uzbekistan": "uz",
+}
+
+
 def normalize(value):
     value = unicodedata.normalize("NFKD", value or "")
     value = "".join(char for char in value if not unicodedata.combining(char))
@@ -122,10 +175,12 @@ def load_rosters():
             "number": row["squad_number"],
             "position": row["position"],
             "player": row["player"],
+            "playerUrl": row.get("player_wikipedia_url", ""),
             "age": row["age"],
             "caps": row["caps"],
             "goals": row["goals"],
             "club": row["professional_club"],
+            "clubUrl": row.get("professional_club_wikipedia_url", ""),
             "clubCountry": row["professional_club_country"],
             "clubLogoUrl": row.get("professional_club_logo_url", ""),
             "fifproApps": row["fifpro_world11_apps"],
@@ -143,10 +198,26 @@ def load_rosters():
 def main():
     rosters = load_rosters()
     data_json = json.dumps(rosters, ensure_ascii=False)
-    themes_json = json.dumps(TEAM_THEMES, ensure_ascii=False)
-    teams = sorted({row["nationalTeam"] for row in rosters})
+    themes = {
+        team: {**theme, "flagCode": TEAM_FLAG_CODES.get(team, "")}
+        for team, theme in TEAM_THEMES.items()
+    }
+    themes_json = json.dumps(themes, ensure_ascii=False)
+    teams_by_group = {}
+    for row in rosters:
+        teams_by_group.setdefault(row["group"], set()).add(row["nationalTeam"])
     team_options = "\n".join(
-        f'<option value="{html.escape(team)}">{html.escape(team)}</option>' for team in teams
+        "\n".join(
+            [
+                f'<optgroup label="Group {html.escape(group)}">',
+                *[
+                    f'<option value="{html.escape(team)}">{html.escape(team)}</option>'
+                    for team in sorted(teams)
+                ],
+                "</optgroup>",
+            ]
+        )
+        for group, teams in sorted(teams_by_group.items())
     )
 
     OUTPUT_HTML.write_text(
@@ -164,16 +235,22 @@ def main():
       color: #172033;
       --team-primary: #172033;
       --team-secondary: #d0d7e2;
-      --team-primary-soft: rgba(23, 32, 51, 0.08);
-      --team-secondary-soft: rgba(208, 215, 226, 0.18);
+      --team-accent: #ffffff;
+      --team-page: #101828;
+      --team-page-2: #25324a;
+      --team-on-page: #111827;
+      --team-on-primary: #ffffff;
+      --team-on-secondary: #111827;
+      --team-primary-soft: rgba(23, 32, 51, 0.28);
+      --team-secondary-soft: rgba(208, 215, 226, 0.32);
     }}
     body {{
       margin: 0;
       padding: 24px;
       background:
-        linear-gradient(135deg, var(--team-primary-soft), transparent 38%),
-        linear-gradient(315deg, var(--team-secondary-soft), transparent 42%),
-        #f6f7f9;
+        linear-gradient(145deg, var(--team-secondary), var(--team-secondary));
+      color: #111827;
+      min-height: 100vh;
     }}
     main {{
       max-width: 1180px;
@@ -185,55 +262,64 @@ def main():
       justify-content: space-between;
       gap: 16px;
       margin-bottom: 18px;
-      border-bottom: 4px solid var(--team-primary);
-      padding-bottom: 16px;
+      border-bottom: 4px solid color-mix(in srgb, var(--team-primary), #000000 28%);
+      padding: 24px;
+      border-radius: 8px;
+      background: var(--team-primary);
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.22);
     }}
     .title-row {{
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 18px;
       min-width: 0;
     }}
     .team-flag {{
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 52px;
-      height: 40px;
-      border: 1px solid #d6dde8;
-      border-radius: 6px;
-      background: #fff;
-      box-shadow: inset 0 -5px 0 var(--team-secondary);
-      font-size: 30px;
-      line-height: 1;
+      width: 92px;
+      height: 60px;
+      border: 1px solid rgba(17, 24, 39, 0.62);
+      border-radius: 4px;
+      background:
+        linear-gradient(90deg, var(--team-primary) 0 34%, var(--team-secondary) 34% 67%, var(--team-accent) 67% 100%);
+      background-position: center;
+      background-size: cover;
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.24);
       flex: 0 0 auto;
     }}
     h1 {{
       margin: 0 0 4px;
-      font-size: 28px;
+      font-size: 44px;
       line-height: 1.15;
-      color: var(--team-primary);
+      color: var(--team-on-primary);
     }}
     .meta {{
       margin: 0;
-      color: #667085;
+      color: var(--team-on-primary);
       font-size: 14px;
     }}
     label {{
       display: grid;
       gap: 6px;
-      color: #344054;
+      color: var(--team-on-primary);
       font-size: 13px;
       font-weight: 700;
+      background: var(--team-primary);
+      border: 1px solid color-mix(in srgb, var(--team-primary), #000000 42%);
+      border-radius: 6px;
+      padding: 10px;
     }}
     select {{
       min-width: 240px;
-      border: 1px solid #cbd5e1;
+      border: 1px solid color-mix(in srgb, var(--team-primary), #000000 55%);
       border-radius: 6px;
-      background: white;
-      color: #172033;
+      background: var(--team-primary);
+      color: var(--team-on-primary);
       font-size: 15px;
       padding: 9px 36px 9px 10px;
+      box-shadow: inset 0 0 0 1px rgba(17, 24, 39, 0.2);
     }}
     .summary {{
       display: flex;
@@ -244,16 +330,18 @@ def main():
     .pill {{
       border: 1px solid color-mix(in srgb, var(--team-primary), #ffffff 68%);
       border-radius: 999px;
-      background: color-mix(in srgb, var(--team-secondary), #ffffff 86%);
+      background: var(--team-primary);
       padding: 7px 11px;
-      color: #344054;
+      color: var(--team-on-primary);
       font-size: 14px;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.14);
     }}
     .table-wrap {{
       overflow-x: auto;
       border: 1px solid color-mix(in srgb, var(--team-primary), #ffffff 72%);
       border-radius: 8px;
       background: white;
+      box-shadow: 0 18px 46px rgba(0, 0, 0, 0.24);
     }}
     table {{
       width: 100%;
@@ -267,11 +355,14 @@ def main():
       font-size: 14px;
       white-space: nowrap;
     }}
+    tbody td {{
+      color: #111827;
+    }}
     th {{
       position: sticky;
       top: 0;
       background: var(--team-primary);
-      color: #ffffff;
+      color: var(--team-on-primary);
       font-size: 12px;
       text-transform: uppercase;
       letter-spacing: 0;
@@ -280,15 +371,24 @@ def main():
       background: #f8fafc;
     }}
     tbody tr.starter {{
-      background: color-mix(in srgb, var(--team-secondary), #ffffff 82%);
-      box-shadow: inset 4px 0 0 var(--team-secondary);
+      background: color-mix(in srgb, var(--team-primary), #ffffff 82%);
+      box-shadow: inset 4px 0 0 var(--team-primary);
     }}
     tbody tr.starter:hover {{
-      background: color-mix(in srgb, var(--team-secondary), #ffffff 74%);
+      background: color-mix(in srgb, var(--team-primary), #ffffff 74%);
     }}
     .player {{
       font-weight: 700;
       color: #111827;
+    }}
+    a.wikilink {{
+      color: inherit;
+      text-decoration: none;
+      border-bottom: 1px solid color-mix(in srgb, currentColor, transparent 65%);
+    }}
+    a.wikilink:hover {{
+      color: var(--team-primary);
+      border-bottom-color: currentColor;
     }}
     .starter-badge {{
       display: inline-flex;
@@ -297,7 +397,7 @@ def main():
       border: 1px solid var(--team-primary);
       border-radius: 999px;
       background: var(--team-primary);
-      color: #ffffff;
+      color: var(--team-on-primary);
       padding: 2px 7px;
       font-size: 11px;
       font-weight: 700;
@@ -324,11 +424,14 @@ def main():
       header {{
         align-items: stretch;
         flex-direction: column;
+        background: var(--team-primary);
       }}
       .team-flag {{
-        width: 46px;
-        height: 36px;
-        font-size: 26px;
+        width: 72px;
+        height: 47px;
+      }}
+      h1 {{
+        font-size: 34px;
       }}
       select {{
         width: 100%;
@@ -344,7 +447,6 @@ def main():
           <span class="team-flag" id="teamFlag" aria-hidden="true"></span>
           <div>
             <h1 id="teamTitle">World Cup Rosters</h1>
-            <p class="meta">Current CSV snapshot with clubs and FIFPRO World 11 selections.</p>
           </div>
         </div>
       </div>
@@ -402,25 +504,21 @@ def main():
           return Number(a.number || 999) - Number(b.number || 999);
         }});
       const totalCaps = players.reduce((sum, row) => sum + Number(row.caps || 0), 0);
-      const fifproPlayers = players.filter(row => Number(row.fifproApps || 0) > 0).length;
-      const starterCount = players.filter(row => row.isStarter).length;
       const formation = players.find(row => row.lineupFormation)?.lineupFormation || '-';
       const group = players[0]?.group || '';
 
       summary.innerHTML = [
         ['Group', group],
         ['Players', players.length],
-        ['Projected XI', starterCount],
         ['Formation', formation],
         ['Total caps', totalCaps],
-        ['FIFPRO players', fifproPlayers],
       ].map(([label, value]) => `<span class="pill">${{label}}: <strong>${{value}}</strong></span>`).join('');
 
       rosterBody.innerHTML = players.map(row => `
         <tr class="${{row.isStarter ? 'starter' : ''}}">
           <td>${{row.number}}</td>
           <td>${{row.position}}</td>
-          <td class="player">${{row.player}}${{row.isStarter ? `<span class="starter-badge">XI ${{row.lineupRole}}</span>` : ''}}</td>
+          <td class="player">${{playerMarkup(row)}}${{row.isStarter ? `<span class="starter-badge">${{escapeHtml(row.lineupRole)}}</span>` : ''}}</td>
           <td>${{row.age || '<span class="muted">-</span>'}}</td>
           <td>${{clubMarkup(row)}}</td>
           <td>${{row.clubCountry || '<span class="muted">-</span>'}}</td>
@@ -437,23 +535,84 @@ def main():
         flag: '🏆',
         primary: '#172033',
         secondary: '#d0d7e2',
+        accent: '#ffffff',
       }};
+      const accent = theme.accent || '#ffffff';
       const root = document.documentElement;
       root.style.setProperty('--team-primary', theme.primary);
       root.style.setProperty('--team-secondary', theme.secondary);
-      root.style.setProperty('--team-primary-soft', hexToRgba(theme.primary, 0.10));
-      root.style.setProperty('--team-secondary-soft', hexToRgba(theme.secondary, 0.16));
+      root.style.setProperty('--team-accent', accent);
+      root.style.setProperty('--team-page', theme.secondary);
+      root.style.setProperty('--team-page-2', theme.secondary);
+      root.style.setProperty('--team-on-page', '#111827');
+      root.style.setProperty('--team-on-primary', readableText(theme.primary));
+      root.style.setProperty('--team-on-secondary', '#111827');
+      root.style.setProperty('--team-primary-soft', hexToRgba(theme.primary, 0.42));
+      root.style.setProperty('--team-secondary-soft', hexToRgba(theme.secondary, 0.38));
       teamTitle.textContent = `${{team}} Roster`;
-      teamFlag.textContent = theme.flag;
+      teamFlag.textContent = '';
+      teamFlag.style.backgroundImage = theme.flagCode
+        ? `url("https://flagcdn.com/w80/${{theme.flagCode}}.png"), linear-gradient(90deg, ${{theme.primary}} 0 34%, ${{theme.secondary}} 34% 67%, ${{accent}} 67% 100%)`
+        : '';
       teamFlag.setAttribute('aria-label', `${{team}} flag`);
     }}
 
-    function hexToRgba(hex, alpha) {{
+    function readableText(hex) {{
+      return luminance(hex) > 0.48 ? '#111827' : '#ffffff';
+    }}
+
+    function luminance(hex) {{
+      const [red, green, blue] = rgbParts(hex).map(value => {{
+        const channel = value / 255;
+        return channel <= 0.03928
+          ? channel / 12.92
+          : Math.pow((channel + 0.055) / 1.055, 2.4);
+      }});
+      return 0.2126 * red + 0.7152 * green + 0.0722 * blue;
+    }}
+
+    function shade(hex, amount) {{
+      const parts = rgbParts(hex).map(value => {{
+        const target = amount < 0 ? 0 : 255;
+        return Math.round(value + (target - value) * Math.abs(amount));
+      }});
+      return `#${{parts.map(value => value.toString(16).padStart(2, '0')).join('')}}`;
+    }}
+
+    function rgbParts(hex) {{
       const value = hex.replace('#', '');
-      const red = parseInt(value.slice(0, 2), 16);
-      const green = parseInt(value.slice(2, 4), 16);
-      const blue = parseInt(value.slice(4, 6), 16);
+      return [
+        parseInt(value.slice(0, 2), 16),
+        parseInt(value.slice(2, 4), 16),
+        parseInt(value.slice(4, 6), 16),
+      ];
+    }}
+
+    function hexToRgba(hex, alpha) {{
+      const [red, green, blue] = rgbParts(hex);
       return `rgba(${{red}}, ${{green}}, ${{blue}}, ${{alpha}})`;
+    }}
+
+    function escapeHtml(value) {{
+      return String(value ?? '').replace(/[&<>"']/g, character => ({{
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;',
+      }}[character]));
+    }}
+
+    function linkMarkup(label, url) {{
+      const safeLabel = escapeHtml(label);
+      if (!url) {{
+        return safeLabel;
+      }}
+      return `<a class="wikilink" href="${{escapeHtml(url)}}" target="_blank" rel="noopener noreferrer">${{safeLabel}}</a>`;
+    }}
+
+    function playerMarkup(row) {{
+      return linkMarkup(row.player, row.playerUrl);
     }}
 
     function clubMarkup(row) {{
@@ -461,9 +620,9 @@ def main():
         return '<span class="muted">-</span>';
       }}
       const logo = row.clubLogoUrl
-        ? `<img class="club-logo" src="${{row.clubLogoUrl}}" alt="" loading="lazy">`
+        ? `<img class="club-logo" src="${{escapeHtml(row.clubLogoUrl)}}" alt="" loading="lazy">`
         : '';
-      return `<span class="club">${{logo}}<span>${{row.club}}</span></span>`;
+      return `<span class="club">${{logo}}<span>${{linkMarkup(row.club, row.clubUrl)}}</span></span>`;
     }}
 
     teamSelect.addEventListener('change', event => renderTeam(event.target.value));
