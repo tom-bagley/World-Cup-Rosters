@@ -5,7 +5,7 @@ from pathlib import Path
 
 
 INPUT_CSV = Path("world_cup_rosters.csv")
-OUTPUT_HTML = Path("world_cup_rosters.html")
+OUTPUT_HTML = Path("index.html")
 
 
 def load_rosters():
