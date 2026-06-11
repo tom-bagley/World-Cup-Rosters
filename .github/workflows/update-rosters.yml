@@ -1,0 +1,37 @@
+name: Update World Cup rosters
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "15 9 * * *"
+
+permissions:
+  contents: write
+
+jobs:
+  update-rosters:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Rebuild roster files
+        run: |
+          python fetch_world_cup_rosters.py
+          python build_roster_viewer.py
+
+      - name: Commit updated roster files
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Update World Cup roster data"
+          file_pattern: "world_cup_rosters.csv index.html"
