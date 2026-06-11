@@ -422,12 +422,7 @@ def parse_rosters():
     rows = []
     fifpro_players = parse_fifpro_world11()
     club_countries = {}
-    club_links_for_logos = {}
-    for club_cell in soup.select("table.wikitable td:nth-child(7)"):
-        links = club_cell.find_all("a", href=True)
-        if links:
-            club_links_for_logos[links[-1]["href"]] = clean_text(club_cell.get_text(" ", strip=True))
-    club_logos = fetch_club_logos_for_links(club_links_for_logos)
+    club_logos = load_club_logo_cache()
     current_group = ""
     retrieved_at = datetime.now(timezone.utc).isoformat(timespec="seconds")
 

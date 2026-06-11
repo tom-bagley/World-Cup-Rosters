@@ -419,22 +419,97 @@ def main():
     }}
     @media (max-width: 720px) {{
       body {{
-        padding: 16px;
+        padding: 10px;
       }}
       header {{
         align-items: stretch;
         flex-direction: column;
         background: var(--team-primary);
+        gap: 12px;
+        margin-bottom: 10px;
+        padding: 14px;
+      }}
+      .title-row {{
+        gap: 10px;
       }}
       .team-flag {{
-        width: 72px;
-        height: 47px;
+        width: 54px;
+        height: 36px;
       }}
       h1 {{
-        font-size: 34px;
+        font-size: 24px;
+      }}
+      label {{
+        padding: 8px;
       }}
       select {{
+        min-width: 0;
         width: 100%;
+        font-size: 14px;
+        padding-block: 8px;
+      }}
+      .summary {{
+        gap: 6px;
+        margin-bottom: 8px;
+      }}
+      .pill {{
+        padding: 5px 8px;
+        font-size: 12px;
+      }}
+      .table-wrap {{
+        border-radius: 6px;
+      }}
+      table {{
+        min-width: 0;
+      }}
+      th, td {{
+        padding: 8px 6px;
+        font-size: 12px;
+      }}
+      th {{
+        font-size: 10px;
+      }}
+      th:nth-child(6),
+      td:nth-child(6),
+      th:nth-child(9),
+      td:nth-child(9),
+      th:nth-child(10),
+      td:nth-child(10) {{
+        display: none;
+      }}
+      th:nth-child(1),
+      td:nth-child(1),
+      th:nth-child(2),
+      td:nth-child(2),
+      th:nth-child(4),
+      td:nth-child(4),
+      th:nth-child(7),
+      td:nth-child(7),
+      th:nth-child(8),
+      td:nth-child(8) {{
+        text-align: center;
+      }}
+      th:nth-child(3),
+      td:nth-child(3) {{
+        min-width: 118px;
+        white-space: normal;
+      }}
+      th:nth-child(5),
+      td:nth-child(5) {{
+        min-width: 104px;
+        white-space: normal;
+      }}
+      .club {{
+        gap: 5px;
+      }}
+      .club-logo {{
+        width: 18px;
+        height: 18px;
+      }}
+      .starter-badge {{
+        margin-left: 4px;
+        padding: 1px 5px;
+        font-size: 9px;
       }}
     }}
   </style>
