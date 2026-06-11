@@ -28,10 +28,11 @@ jobs:
       - name: Rebuild roster files
         run: |
           python fetch_world_cup_rosters.py
+          python fetch_world_cup_starting_xi.py
           python build_roster_viewer.py
 
       - name: Commit updated roster files
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "Update World Cup roster data"
-          file_pattern: "world_cup_rosters.csv index.html"
+          file_pattern: "world_cup_rosters.csv world_cup_starting_xi.csv index.html"
