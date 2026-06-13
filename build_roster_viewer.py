@@ -261,6 +261,28 @@ def main():
       border-radius: 6px;
       padding: 10px;
     }}
+    .header-actions {{
+      display: flex;
+      align-items: end;
+      gap: 10px;
+    }}
+    .nav-link {{
+      display: inline-flex;
+      align-items: center;
+      min-height: 38px;
+      border: 1px solid color-mix(in srgb, var(--team-primary), #000000 42%);
+      border-radius: 6px;
+      background: var(--team-primary);
+      color: var(--team-on-primary);
+      font-size: 13px;
+      font-weight: 800;
+      padding: 10px 12px;
+      text-decoration: none;
+    }}
+    .nav-link:hover {{
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }}
     select {{
       min-width: 240px;
       border: 1px solid color-mix(in srgb, var(--team-primary), #000000 55%);
@@ -555,12 +577,15 @@ def main():
           </div>
         </div>
       </div>
-      <label>
-        Team
-        <select id="teamSelect">
-          {team_options}
-        </select>
-      </label>
+      <div class="header-actions">
+        <a class="nav-link" href="standings.html">Standings</a>
+        <label>
+          Team
+          <select id="teamSelect">
+            {team_options}
+          </select>
+        </label>
+      </div>
     </header>
 
     <section class="summary" id="summary"></section>
