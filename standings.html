@@ -1,0 +1,713 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>World Cup Family Standings</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f6f7f9;
+      color: #172033;
+      --ink: #172033;
+      --muted: #667085;
+      --line: #d0d7e2;
+      --surface: #ffffff;
+      --green: #087443;
+      --red: #b42318;
+      --gold: #f1bf00;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 24px;
+      background:
+        linear-gradient(145deg, #eef2f7, #dbe4ef);
+      color: var(--ink);
+    }
+    main {
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+    header {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 18px;
+      border-bottom: 4px solid #0f172a;
+      border-radius: 8px;
+      background: #172033;
+      color: #ffffff;
+      padding: 24px;
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.2);
+    }
+    h1 {
+      margin: 0 0 6px;
+      font-size: 42px;
+      line-height: 1.12;
+    }
+    .meta {
+      margin: 0;
+      color: #d0d7e2;
+      font-size: 14px;
+    }
+    .nav-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 38px;
+      border: 1px solid rgba(255, 255, 255, 0.34);
+      border-radius: 6px;
+      color: #ffffff;
+      padding: 8px 12px;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .nav-link:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+    .leader-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .pill {
+      border: 1px solid #d0d7e2;
+      border-radius: 999px;
+      background: #ffffff;
+      padding: 7px 11px;
+      color: #172033;
+      font-size: 14px;
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+    }
+    .scoring-card {
+      overflow: hidden;
+      margin-top: 14px;
+      border: 1px solid #d0d7e2;
+      border-radius: 8px;
+      background: #ffffff;
+      box-shadow: 0 18px 42px rgba(15, 23, 42, 0.1);
+    }
+    .scoring-card h2 {
+      margin: 0;
+      border-bottom: 1px solid #edf0f5;
+      background: #172033;
+      color: #ffffff;
+      padding: 11px 14px;
+      font-size: 16px;
+    }
+    .scoring-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .scoring-table th,
+    .scoring-table td {
+      padding: 9px 14px;
+      border-bottom: 1px solid #edf0f5;
+      text-align: left;
+      font-size: 14px;
+    }
+    .scoring-table tr:last-child td {
+      border-bottom: 0;
+    }
+    .scoring-table th {
+      background: #f8fafc;
+      color: #475467;
+      font-size: 12px;
+      text-transform: uppercase;
+    }
+    .scoring-table td:last-child,
+    .scoring-table th:last-child {
+      width: 110px;
+      text-align: right;
+      font-weight: 800;
+    }
+    .standings-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+    .player-card {
+      display: grid;
+      grid-template-columns: 180px minmax(0, 1fr);
+      align-items: start;
+      gap: 16px;
+      border: 1px solid #d0d7e2;
+      border-radius: 8px;
+      background: var(--surface);
+      padding: 16px;
+      box-shadow: 0 18px 42px rgba(15, 23, 42, 0.12);
+    }
+    .player-card.leader {
+      border-color: #d9a441;
+      box-shadow: 0 18px 42px rgba(120, 75, 0, 0.16);
+    }
+    .player-head {
+      display: grid;
+      align-content: start;
+      gap: 10px;
+    }
+    h2 {
+      margin: 0;
+      font-size: 24px;
+      line-height: 1.15;
+    }
+    .total {
+      display: grid;
+      width: 92px;
+      gap: 2px;
+      border-radius: 6px;
+      background: #172033;
+      color: #ffffff;
+      padding: 8px 10px;
+      text-align: center;
+    }
+    .total strong {
+      font-size: 24px;
+      line-height: 1;
+    }
+    .total span {
+      color: #d0d7e2;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .team-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .team-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      min-height: 46px;
+      border: 1px solid color-mix(in srgb, var(--team-primary), #ffffff 72%);
+      border-radius: 6px;
+      color: inherit;
+      padding: 8px 10px;
+      text-decoration: none;
+      background:
+        linear-gradient(90deg, color-mix(in srgb, var(--team-primary), #ffffff 86%), #ffffff 56%),
+        var(--team-secondary);
+      box-shadow: inset 4px 0 0 var(--team-primary);
+    }
+    .team-row:hover {
+      transform: translateY(-1px);
+      box-shadow:
+        inset 4px 0 0 var(--team-primary),
+        0 8px 18px rgba(15, 23, 42, 0.12);
+    }
+    .team-identity {
+      display: inline-flex;
+      align-items: center;
+      min-width: 0;
+      gap: 9px;
+    }
+    .team-identity > span {
+      display: grid;
+      min-width: 0;
+      gap: 1px;
+    }
+    .team-flag {
+      width: 34px;
+      height: 23px;
+      border: 1px solid rgba(15, 23, 42, 0.2);
+      border-radius: 3px;
+      object-fit: cover;
+      background: var(--team-secondary);
+      box-shadow: 0 4px 8px rgba(15, 23, 42, 0.12);
+      flex: 0 0 auto;
+    }
+    .team-name {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-weight: 700;
+    }
+    .team-points {
+      min-width: 44px;
+      border-radius: 999px;
+      background: #eef2f7;
+      color: #172033;
+      padding: 4px 8px;
+      text-align: center;
+      font-weight: 800;
+    }
+    .score-detail {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .empty-note {
+      color: var(--muted);
+      font-size: 14px;
+    }
+    @media (max-width: 900px) {
+      .player-card {
+        grid-template-columns: 150px minmax(0, 1fr);
+      }
+      .team-list {
+        grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      }
+    }
+    @media (max-width: 640px) {
+      body {
+        padding: 10px;
+      }
+      header {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 10px;
+        padding: 14px;
+      }
+      h1 {
+        font-size: 27px;
+      }
+      .standings-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+      .player-card {
+        grid-template-columns: 1fr;
+        padding: 12px;
+      }
+      .player-head {
+        grid-template-columns: 1fr auto;
+        align-items: start;
+      }
+      .team-list {
+        grid-template-columns: 1fr;
+      }
+      h2 {
+        font-size: 21px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div>
+        <h1>World Cup Family Standings</h1>
+        <p class="meta">Team points roll up automatically for each player.</p>
+      </div>
+      <a class="nav-link" href="index.html">Rosters</a>
+    </header>
+
+    <section class="leader-strip" id="leaderStrip"></section>
+    <section class="standings-grid" id="standingsGrid"></section>
+    <section class="scoring-card" aria-labelledby="scoringTitle">
+      <h2 id="scoringTitle">Point System</h2>
+      <table class="scoring-table">
+        <tbody>
+          <tr><td>Win</td><td>3</td></tr>
+          <tr><td>Draw</td><td>1</td></tr>
+          <tr><td>Goal scored</td><td>1</td></tr>
+          <tr><td>Gets out of group stage</td><td>5</td></tr>
+          <tr><td>Sweet 16</td><td>10</td></tr>
+          <tr><td>Elite 8</td><td>15</td></tr>
+          <tr><td>Final 4</td><td>20</td></tr>
+          <tr><td>Runner up</td><td>25</td></tr>
+          <tr><td>Champion</td><td>40</td></tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <script>
+    const players = [
+      {
+        name: 'Tom',
+        teams: [
+          { name: 'DR Congo', points: 0 },
+          { name: 'New Zealand', points: 0 },
+          { name: 'Panama', points: 0 },
+          { name: 'Colombia', points: 0 },
+          { name: 'Senegal', points: 0 },
+          { name: 'Belgium', points: 0 },
+          { name: 'Algeria', points: 0 },
+          { name: 'Scotland', points: 0 },
+          { name: 'South Korea', points: 0 },
+          { name: 'Mexico', points: 0 },
+          { name: 'Brazil', points: 0 },
+        ],
+      },
+      {
+        name: 'Tyler',
+        teams: [
+          { name: 'USA', points: 0 },
+          { name: 'Curacao', points: 0 },
+          { name: 'Haiti', points: 0 },
+          { name: 'Iraq', points: 0 },
+          { name: 'New Zealand', points: 0 },
+          { name: 'Jordan', points: 0 },
+          { name: 'Qatar', points: 0 },
+          { name: 'Cape Verde', points: 0 },
+          { name: 'Panama', points: 0 },
+          { name: 'Uzbekistan', points: 0 },
+          { name: 'Tunisia', points: 0 },
+          { name: 'South Africa', points: 0 },
+          { name: 'Ghana', points: 0 },
+          { name: 'Spain', points: 0 },
+          { name: 'Japan', points: 0 },
+          { name: 'Switzerland', points: 0 },
+          { name: 'Ivory Coast', points: 0 },
+          { name: 'Czechia', points: 0 },
+        ],
+      },
+      {
+        name: 'Kaylyn',
+        teams: [
+          { name: 'France', points: 0 },
+          { name: 'Bosnia and Herzegovina', points: 0 },
+          { name: 'Paraguay', points: 0 },
+          { name: 'Ghana', points: 0 },
+          { name: 'Haiti', points: 0 },
+          { name: 'Portugal', points: 0 },
+          { name: 'Netherlands', points: 0 },
+          { name: 'Ecuador', points: 0 },
+          { name: 'Austria', points: 0 },
+          { name: 'Saudi Arabia', points: 0 },
+        ],
+      },
+      {
+        name: 'Dad',
+        teams: [
+          { name: 'England', points: 0 },
+          { name: 'Argentina', points: 0 },
+          { name: 'Iran', points: 0 },
+          { name: 'Turkey', points: 0 },
+          { name: 'Uruguay', points: 0 },
+          { name: 'Croatia', points: 0 },
+          { name: 'Germany', points: 0 },
+        ],
+      },
+      {
+        name: 'Mom',
+        teams: [
+          { name: 'Norway', points: 0 },
+          { name: 'France', points: 0 },
+          { name: 'Sweden', points: 0 },
+          { name: 'Canada', points: 0 },
+          { name: 'Australia', points: 0 },
+          { name: 'Morocco', points: 0 },
+          { name: 'South Africa', points: 0 },
+          { name: 'Egypt', points: 0 },
+        ],
+      },
+    ];
+
+    const teamThemes = {
+      Algeria: { primary: '#006233', secondary: '#ffffff', flagCode: 'dz' },
+      Argentina: { primary: '#6cace4', secondary: '#ffffff', flagCode: 'ar' },
+      Australia: { primary: '#00008b', secondary: '#ffcd00', flagCode: 'au' },
+      Austria: { primary: '#ed2939', secondary: '#ffffff', flagCode: 'at' },
+      Belgium: { primary: '#000000', secondary: '#fae042', flagCode: 'be' },
+      'Bosnia and Herzegovina': { primary: '#002395', secondary: '#fecb00', flagCode: 'ba' },
+      Brazil: { primary: '#009b3a', secondary: '#ffdf00', flagCode: 'br' },
+      Canada: { primary: '#ff0000', secondary: '#ffffff', flagCode: 'ca' },
+      'Cape Verde': { primary: '#003893', secondary: '#cf2027', flagCode: 'cv' },
+      Colombia: { primary: '#fcd116', secondary: '#003893', flagCode: 'co' },
+      Croatia: { primary: '#171796', secondary: '#ff0000', flagCode: 'hr' },
+      Curacao: { primary: '#002b7f', secondary: '#f9e814', flagCode: 'cw' },
+      Czechia: { primary: '#11457e', secondary: '#d7141a', flagCode: 'cz' },
+      'DR Congo': { primary: '#007fff', secondary: '#f7d618', flagCode: 'cd' },
+      Ecuador: { primary: '#ffdd00', secondary: '#034ea2', flagCode: 'ec' },
+      Egypt: { primary: '#ce1126', secondary: '#000000', flagCode: 'eg' },
+      England: { primary: '#cf081f', secondary: '#ffffff', flagCode: 'gb-eng' },
+      France: { primary: '#002395', secondary: '#ed2939', flagCode: 'fr' },
+      Germany: { primary: '#000000', secondary: '#ffce00', flagCode: 'de' },
+      Ghana: { primary: '#006b3f', secondary: '#fcd116', flagCode: 'gh' },
+      Haiti: { primary: '#00209f', secondary: '#d21034', flagCode: 'ht' },
+      Iran: { primary: '#239f40', secondary: '#da0000', flagCode: 'ir' },
+      Iraq: { primary: '#ce1126', secondary: '#007a3d', flagCode: 'iq' },
+      'Ivory Coast': { primary: '#f77f00', secondary: '#009e60', flagCode: 'ci' },
+      Japan: { primary: '#bc002d', secondary: '#ffffff', flagCode: 'jp' },
+      Jordan: { primary: '#007a3d', secondary: '#ce1126', flagCode: 'jo' },
+      Mexico: { primary: '#006847', secondary: '#ce1126', flagCode: 'mx' },
+      Morocco: { primary: '#c1272d', secondary: '#006233', flagCode: 'ma' },
+      Netherlands: { primary: '#21468b', secondary: '#ae1c28', flagCode: 'nl' },
+      'New Zealand': { primary: '#00247d', secondary: '#cc142b', flagCode: 'nz' },
+      Norway: { primary: '#ba0c2f', secondary: '#00205b', flagCode: 'no' },
+      Panama: { primary: '#005293', secondary: '#d21034', flagCode: 'pa' },
+      Paraguay: { primary: '#0038a8', secondary: '#d52b1e', flagCode: 'py' },
+      Portugal: { primary: '#006600', secondary: '#ff0000', flagCode: 'pt' },
+      Qatar: { primary: '#8a1538', secondary: '#ffffff', flagCode: 'qa' },
+      'Saudi Arabia': { primary: '#006c35', secondary: '#ffffff', flagCode: 'sa' },
+      Scotland: { primary: '#005eb8', secondary: '#ffffff', flagCode: 'gb-sct' },
+      Senegal: { primary: '#00853f', secondary: '#fdef42', flagCode: 'sn' },
+      'South Africa': { primary: '#007a4d', secondary: '#ffb612', flagCode: 'za' },
+      'South Korea': { primary: '#c60c30', secondary: '#003478', flagCode: 'kr' },
+      Spain: { primary: '#aa151b', secondary: '#f1bf00', flagCode: 'es' },
+      Sweden: { primary: '#006aa7', secondary: '#fecc00', flagCode: 'se' },
+      Switzerland: { primary: '#ff0000', secondary: '#ffffff', flagCode: 'ch' },
+      Tunisia: { primary: '#e70013', secondary: '#ffffff', flagCode: 'tn' },
+      Turkey: { primary: '#e30a17', secondary: '#ffffff', flagCode: 'tr' },
+      Uruguay: { primary: '#0038a8', secondary: '#fcd116', flagCode: 'uy' },
+      USA: { primary: '#3c3b6e', secondary: '#b22234', flagCode: 'us' },
+      Uzbekistan: { primary: '#1eb53a', secondary: '#0099b5', flagCode: 'uz' },
+    };
+
+    const standingsGrid = document.getElementById('standingsGrid');
+    const leaderStrip = document.getElementById('leaderStrip');
+    const ESPN_SCOREBOARD_URL = 'https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard?limit=200&dates=20260611-20260719';
+    const scoringRules = {
+      win: 3,
+      draw: 1,
+      goal: 1,
+      stageBonuses: {
+        group: 5,
+        round16: 10,
+        top8: 15,
+        final4: 20,
+        runnerUp: 25,
+        champion: 40,
+      },
+    };
+    const teamStageStatus = {
+      // Example: Spain: 'top8', Brazil: 'champion'
+      // Use: group, round16, top8, final4, runnerUp, champion
+    };
+    const teamAliases = {
+      'Bosnia and Herzegovina': ['Bosnia-Herzegovina'],
+      Czechia: ['Czech Republic'],
+      'Ivory Coast': ["Cote d'Ivoire"],
+      'South Korea': ['Korea Republic'],
+      Turkey: ['Turkiye'],
+      USA: ['United States'],
+    };
+    let teamStats = {};
+
+    function totalPoints(player) {
+      return player.teams.reduce((sum, team) => sum + teamScore(team.name).total, 0);
+    }
+
+    function renderStandings() {
+      const rankedPlayers = [...players].sort((left, right) => totalPoints(right) - totalPoints(left));
+      const leaderTotal = totalPoints(rankedPlayers[0] || { teams: [] });
+
+      leaderStrip.innerHTML = [
+        ['Leader', rankedPlayers[0]?.name || '-'],
+        ['Top score', leaderTotal],
+        ['Players', players.length],
+        ['Scoring', '3W 1D 1G + stage'],
+      ].map(([label, value]) => `<span class="pill">${label}: <strong>${escapeHtml(value)}</strong></span>`).join('');
+
+      standingsGrid.innerHTML = rankedPlayers.map(player => {
+        const total = totalPoints(player);
+        const isLeader = total === leaderTotal && leaderTotal > 0;
+        return `
+          <article class="player-card ${isLeader ? 'leader' : ''}">
+            <div class="player-head">
+              <h2>${escapeHtml(player.name)}</h2>
+              <div class="total">
+                <strong>${escapeHtml(total)}</strong>
+                <span>Total</span>
+              </div>
+            </div>
+            ${teamListMarkup(player.teams)}
+          </article>
+        `;
+      }).join('');
+    }
+
+    function teamListMarkup(teams) {
+      if (!teams.length) {
+        return '<p class="empty-note">Teams coming soon.</p>';
+      }
+      return `
+        <ul class="team-list">
+          ${rankedTeams(teams).map(team => {
+            const theme = teamThemes[team.name] || fallbackTheme;
+            const score = teamScore(team.name);
+            return `
+            <li>
+              <a class="team-row" href="index.html?team=${encodeURIComponent(rosterTeamName(team.name))}" style="--team-primary: ${escapeHtml(theme.primary)}; --team-secondary: ${escapeHtml(theme.secondary)};">
+                <span class="team-identity">
+                  ${flagMarkup(team.name, theme)}
+                  <span>
+                    <span class="team-name">${escapeHtml(team.name)}</span>
+                    <span class="score-detail">${escapeHtml(scoreLabel(score))}</span>
+                  </span>
+                </span>
+                <span class="team-points">${escapeHtml(score.total)}</span>
+              </a>
+            </li>
+          `}).join('')}
+        </ul>
+      `;
+    }
+
+    const fallbackTheme = { primary: '#172033', secondary: '#d0d7e2', flagCode: '' };
+
+    function rankedTeams(teams) {
+      return [...teams].sort((left, right) => {
+        const scoreDifference = teamScore(right.name).total - teamScore(left.name).total;
+        if (scoreDifference !== 0) {
+          return scoreDifference;
+        }
+        return left.name.localeCompare(right.name);
+      });
+    }
+
+    function teamScore(teamName) {
+      const stats = teamStats[teamName] || { wins: 0, draws: 0, goals: 0 };
+      const stage = teamStageStatus[teamName] || '';
+      const stageBonus = scoringRules.stageBonuses[stage] || 0;
+      const matchPoints =
+        (stats.wins * scoringRules.win) +
+        (stats.draws * scoringRules.draw) +
+        (stats.goals * scoringRules.goal);
+      return {
+        wins: stats.wins,
+        draws: stats.draws,
+        goals: stats.goals,
+        stageBonus,
+        total: matchPoints + stageBonus,
+      };
+    }
+
+    function rosterTeamName(teamName) {
+      if (teamName === 'Czechia') {
+        return 'Czech Republic';
+      }
+      if (teamName === 'Turkey') {
+        return 'Turkiye';
+      }
+      if (teamName === 'USA') {
+        return 'United States';
+      }
+      if (teamName === 'Curacao') {
+        return 'Curaçao';
+      }
+      return teamName;
+    }
+
+    function scoreLabel(score) {
+      const parts = [];
+      if (score.wins) {
+        parts.push(`${score.wins}W`);
+      }
+      if (score.draws) {
+        parts.push(`${score.draws}D`);
+      }
+      if (score.goals) {
+        parts.push(`${score.goals}G`);
+      }
+      if (score.stageBonus) {
+        parts.push(`+${score.stageBonus}`);
+      }
+      return parts.length ? parts.join(' ') : '0W 0D 0G';
+    }
+
+    async function fetchScoreboard() {
+      try {
+        const response = await fetch(ESPN_SCOREBOARD_URL, { cache: 'no-store' });
+        if (!response.ok) {
+          throw new Error(`ESPN scoreboard returned ${response.status}`);
+        }
+        const data = await response.json();
+        teamStats = statsFromMatches(data.events || []);
+      } catch (error) {
+        console.warn(error);
+        teamStats = {};
+      }
+      renderStandings();
+    }
+
+    function statsFromMatches(matches) {
+      const stats = {};
+      for (const match of matches) {
+        const competition = match.competitions?.[0] || {};
+        const competitors = competition.competitors || [];
+        const status = match.status?.type || {};
+        if (status.state !== 'post' || competitors.length < 2) {
+          continue;
+        }
+
+        const [first, second] = competitors;
+        const firstName = displayTeamName(first.team?.displayName);
+        const secondName = displayTeamName(second.team?.displayName);
+        const firstScore = Number(first.score || 0);
+        const secondScore = Number(second.score || 0);
+        ensureStats(stats, firstName);
+        ensureStats(stats, secondName);
+        stats[firstName].goals += firstScore;
+        stats[secondName].goals += secondScore;
+
+        if (firstScore > secondScore) {
+          stats[firstName].wins += 1;
+        } else if (secondScore > firstScore) {
+          stats[secondName].wins += 1;
+        } else {
+          stats[firstName].draws += 1;
+          stats[secondName].draws += 1;
+        }
+      }
+      return stats;
+    }
+
+    function ensureStats(stats, teamName) {
+      if (!stats[teamName]) {
+        stats[teamName] = { wins: 0, draws: 0, goals: 0 };
+      }
+    }
+
+    function displayTeamName(value) {
+      const normalized = normalize(value);
+      for (const player of players) {
+        for (const team of player.teams) {
+          const candidates = [team.name, ...(teamAliases[team.name] || [])].map(normalize);
+          if (candidates.includes(normalized)) {
+            return team.name;
+          }
+        }
+      }
+      return value || '';
+    }
+
+    function normalize(value) {
+      return String(value || '')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, ' ')
+        .trim();
+    }
+
+    function flagMarkup(teamName, theme) {
+      if (!theme.flagCode) {
+        return '';
+      }
+      return `<img class="team-flag" src="https://flagcdn.com/w80/${escapeHtml(theme.flagCode)}.png" alt="${escapeHtml(teamName)} flag" loading="lazy">`;
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? '').replace(/[&<>"']/g, character => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;',
+      }[character]));
+    }
+
+    renderStandings();
+    fetchScoreboard();
+  </script>
+</body>
+</html>
