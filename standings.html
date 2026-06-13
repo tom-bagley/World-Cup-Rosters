@@ -289,7 +289,8 @@
       text-underline-offset: 2px;
     }
     .estimate-details:hover .team-estimate,
-    .estimate-details:focus-within .team-estimate {
+    .estimate-details:focus-within .team-estimate,
+    .estimate-details.is-open .team-estimate {
       color: #172033;
     }
     .estimate-popover {
@@ -307,7 +308,8 @@
       text-align: left;
     }
     .estimate-details:hover .estimate-popover,
-    .estimate-details:focus-within .estimate-popover {
+    .estimate-details:focus-within .estimate-popover,
+    .estimate-details.is-open .estimate-popover {
       display: block;
     }
     .estimate-popover h3 {
@@ -1391,7 +1393,7 @@
                 <span class="team-points">${escapeHtml(score.total)}</span>
               </a>
               <span class="team-values estimate-details">
-                <span class="team-estimate" tabindex="0">${escapeHtml(formatEstimate(estimatedRos))} ROS</span>
+                <span class="team-estimate" role="button" tabindex="0" aria-label="${escapeHtml(team.name)} projected rest of season points">${escapeHtml(formatEstimate(estimatedRos))} ROS</span>
                 ${estimateBreakdownMarkup(team.name, breakdown)}
               </span>
             </li>
@@ -1691,6 +1693,54 @@
         "'": '&#39;',
       }[character]));
     }
+
+    function closeEstimatePopovers() {
+      document.querySelectorAll('.estimate-details.is-open').forEach(details => {
+        details.classList.remove('is-open');
+      });
+      if (document.activeElement?.classList?.contains('team-estimate')) {
+        document.activeElement.blur();
+      }
+    }
+
+    standingsGrid.addEventListener('click', event => {
+      const trigger = event.target.closest('.team-estimate');
+      if (!trigger) {
+        return;
+      }
+
+      const details = trigger.closest('.estimate-details');
+      if (!details) {
+        return;
+      }
+
+      const shouldOpen = !details.classList.contains('is-open');
+      closeEstimatePopovers();
+      if (shouldOpen) {
+        details.classList.add('is-open');
+        trigger.focus({ preventScroll: true });
+      }
+      event.preventDefault();
+      event.stopPropagation();
+    });
+
+    standingsGrid.addEventListener('keydown', event => {
+      if (!event.target.classList.contains('team-estimate')) {
+        return;
+      }
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        event.target.click();
+      } else if (event.key === 'Escape') {
+        closeEstimatePopovers();
+      }
+    });
+
+    document.addEventListener('pointerdown', event => {
+      if (!event.target.closest('.estimate-details')) {
+        closeEstimatePopovers();
+      }
+    });
 
     renderStandings();
     fetchScoreboard();
