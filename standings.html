@@ -187,27 +187,43 @@
       padding: 0;
       list-style: none;
     }
-    .team-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
+    .team-list > li {
+      position: relative;
+      z-index: 0;
+    }
+    .team-list > li:has(.estimate-details:hover),
+    .team-list > li:has(.estimate-details:focus-within) {
+      z-index: 1000;
+    }
+    .team-item {
+      position: relative;
+      z-index: 0;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: stretch;
       min-height: 46px;
       border: 1px solid color-mix(in srgb, var(--team-primary), #ffffff 72%);
       border-radius: 6px;
-      color: inherit;
-      padding: 8px 10px;
-      text-decoration: none;
       background:
         linear-gradient(90deg, color-mix(in srgb, var(--team-primary), #ffffff 86%), #ffffff 56%),
         var(--team-secondary);
       box-shadow: inset 4px 0 0 var(--team-primary);
     }
-    .team-row:hover {
+    .team-item:hover {
       transform: translateY(-1px);
       box-shadow:
         inset 4px 0 0 var(--team-primary),
         0 8px 18px rgba(15, 23, 42, 0.12);
+    }
+    .team-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      min-width: 0;
+      color: inherit;
+      padding: 8px 6px 8px 10px;
+      text-decoration: none;
     }
     .team-identity {
       display: inline-flex;
@@ -245,6 +261,99 @@
       padding: 4px 8px;
       text-align: center;
       font-weight: 800;
+    }
+    .team-values {
+      display: grid;
+      flex: 0 0 auto;
+      gap: 3px;
+      justify-items: end;
+      text-align: right;
+      padding: 6px 10px 6px 0;
+    }
+    .team-estimate {
+      appearance: none;
+      border: 0;
+      border-radius: 4px;
+      background: transparent;
+      color: #475467;
+      cursor: help;
+      font-size: 11px;
+      font-weight: 800;
+      list-style: none;
+      padding: 2px 0;
+      white-space: nowrap;
+    }
+    .team-estimate:hover {
+      color: #172033;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+    .estimate-details:hover .team-estimate,
+    .estimate-details:focus-within .team-estimate {
+      color: #172033;
+    }
+    .estimate-popover {
+      display: none;
+      position: absolute;
+      z-index: 10000;
+      top: calc(100% + 6px);
+      right: 0;
+      width: min(320px, calc(100vw - 28px));
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      background: #ffffff;
+      box-shadow: 0 18px 38px rgba(15, 23, 42, 0.22);
+      padding: 10px;
+      text-align: left;
+    }
+    .estimate-details:hover .estimate-popover,
+    .estimate-details:focus-within .estimate-popover {
+      display: block;
+    }
+    .estimate-popover h3 {
+      margin: 0 0 8px;
+      font-size: 13px;
+      line-height: 1.2;
+    }
+    .estimate-section-title {
+      margin: 10px 0 4px;
+      color: #475467;
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+    .estimate-popover h3 + .estimate-section-title {
+      margin-top: 0;
+    }
+    .estimate-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .estimate-table th,
+    .estimate-table td {
+      border-bottom: 1px solid #edf0f5;
+      padding: 5px 0;
+      font-size: 11px;
+    }
+    .estimate-table th {
+      color: #667085;
+      font-weight: 800;
+      text-align: right;
+      text-transform: uppercase;
+    }
+    .estimate-table th:first-child,
+    .estimate-table td:first-child {
+      text-align: left;
+    }
+    .estimate-table td:not(:first-child) {
+      text-align: right;
+      font-weight: 700;
+    }
+    .estimate-total td {
+      border-bottom: 0;
+      color: #172033;
+      font-weight: 900;
     }
     .score-detail {
       color: var(--muted);
@@ -292,6 +401,9 @@
       .team-list {
         grid-template-columns: 1fr;
       }
+      .estimate-popover {
+        right: 0;
+      }
       h2 {
         font-size: 21px;
       }
@@ -317,12 +429,12 @@
           <tr><td>Win</td><td>3</td></tr>
           <tr><td>Draw</td><td>1</td></tr>
           <tr><td>Goal scored</td><td>1</td></tr>
-          <tr><td>Gets out of group stage</td><td>5</td></tr>
-          <tr><td>Sweet 16</td><td>10</td></tr>
-          <tr><td>Elite 8</td><td>15</td></tr>
-          <tr><td>Final 4</td><td>20</td></tr>
-          <tr><td>Runner up</td><td>25</td></tr>
-          <tr><td>Champion</td><td>40</td></tr>
+          <tr><td>Gets out of group stage</td><td>+5</td></tr>
+          <tr><td>Sweet 16</td><td>+10</td></tr>
+          <tr><td>Elite 8</td><td>+15</td></tr>
+          <tr><td>Final 4</td><td>+20</td></tr>
+          <tr><td>Runner up</td><td>+25</td></tr>
+          <tr><td>Champion</td><td>+40</td></tr>
         </tbody>
       </table>
     </section>
@@ -471,11 +583,11 @@
       goal: 1,
       stageBonuses: {
         group: 5,
-        round16: 10,
-        top8: 15,
-        final4: 20,
-        runnerUp: 25,
-        champion: 40,
+        round16: 15,
+        top8: 30,
+        final4: 50,
+        runnerUp: 75,
+        champion: 115,
       },
     };
     const teamStageStatus = {
@@ -490,6 +602,736 @@
       Turkey: ['Turkiye'],
       USA: ['United States'],
     };
+    const teamExpectedSeasonPoints = {
+      Spain: 64.773,
+      France: 60.310,
+      Portugal: 52.678,
+      England: 52.339,
+      Brazil: 51.488,
+      Argentina: 48.674,
+      Germany: 42.072,
+      Netherlands: 38.793,
+      Belgium: 37.549,
+      USA: 34.839,
+      Colombia: 34.710,
+      Norway: 33.124,
+      Switzerland: 31.998,
+      Mexico: 31.073,
+      Japan: 30.368,
+      Croatia: 30.005,
+      Uruguay: 27.734,
+      Ecuador: 26.524,
+      Turkiye: 26.383,
+      Morocco: 26.356,
+      "Cote d'Ivoire": 24.464,
+      'Korea Republic': 22.999,
+      Egypt: 22.349,
+      Canada: 20.484,
+      Czechia: 20.426,
+      Senegal: 20.371,
+      Sweden: 19.619,
+      'Bosnia and Herzegovina': 17.817,
+      Algeria: 17.805,
+      Scotland: 17.062,
+      Ghana: 16.800,
+      Paraguay: 15.049,
+      Uzbekistan: 14.141,
+      'DR Congo': 13.945,
+      Australia: 12.609,
+      'Saudi Arabia': 10.777,
+      Tunisia: 10.437,
+      Austria: 10.087,
+      Iran: 9.744,
+      'Cape Verde': 9.274,
+      Qatar: 9.225,
+      Panama: 9.001,
+      Jordan: 8.074,
+      'South Africa': 7.890,
+      Iraq: 7.079,
+      Haiti: 7.077,
+      'New Zealand': 6.190,
+      Curacao: 6.153,
+    };
+    const teamExpectedPointBreakdowns = {
+      Spain: {
+        total: 64.773,
+        parts: [
+          { label: 'Expected wins', pointsAvailable: '3', probability: '', expected: 7.149 },
+          { label: 'Expected draws', pointsAvailable: '1', probability: '', expected: 0.373 },
+          { label: 'Expected goals', pointsAvailable: '1', probability: '', expected: 15.330 },
+          { label: 'Gets out of group stage', pointsAvailable: '5', probability: '0.985', expected: 4.926 },
+          { label: 'Sweet 16', pointsAvailable: '10', probability: '0.794', expected: 7.942 },
+          { label: 'Elite 8', pointsAvailable: '15', probability: '0.608', expected: 9.118 },
+          { label: 'Final 4', pointsAvailable: '20', probability: '0.490', expected: 9.804 },
+          { label: 'Runner up', pointsAvailable: '25', probability: '0.123', expected: 3.076 },
+          { label: 'Champion', pointsAvailable: '40', probability: '0.176', expected: 7.055 },
+        ],
+      },
+      France: {
+        total: 60.310,
+        parts: [
+          { label: 'Expected wins', pointsAvailable: '3', probability: '', expected: 6.225 },
+          { label: 'Expected draws', pointsAvailable: '1', probability: '', expected: 0.562 },
+          { label: 'Expected goals', pointsAvailable: '1', probability: '', expected: 13.655 },
+          { label: 'Gets out of group stage', pointsAvailable: '5', probability: '0.978', expected: 4.889 },
+          { label: 'Sweet 16', pointsAvailable: '10', probability: '0.813', expected: 8.134 },
+          { label: 'Elite 8', pointsAvailable: '15', probability: '0.609', expected: 9.141 },
+          { label: 'Final 4', pointsAvailable: '20', probability: '0.418', expected: 8.368 },
+          { label: 'Runner up', pointsAvailable: '25', probability: '0.125', expected: 3.115 },
+          { label: 'Champion', pointsAvailable: '40', probability: '0.156', expected: 6.221 },
+        ],
+      },
+      Portugal: {
+        total: 52.678,
+        parts: [
+          { label: 'Expected wins', pointsAvailable: '3', probability: '', expected: 6.084 },
+          { label: 'Expected draws', pointsAvailable: '1', probability: '', expected: 0.556 },
+          { label: 'Expected goals', pointsAvailable: '1', probability: '', expected: 12.575 },
+          { label: 'Gets out of group stage', pointsAvailable: '5', probability: '0.966', expected: 4.828 },
+          { label: 'Sweet 16', pointsAvailable: '10', probability: '0.730', expected: 7.305 },
+          { label: 'Elite 8', pointsAvailable: '15', probability: '0.539', expected: 8.088 },
+          { label: 'Final 4', pointsAvailable: '20', probability: '0.348', expected: 6.969 },
+          { label: 'Runner up', pointsAvailable: '25', probability: '0.078', expected: 1.959 },
+          { label: 'Champion', pointsAvailable: '40', probability: '0.108', expected: 4.315 },
+        ],
+      },
+      England: {
+        total: 52.339,
+        parts: [
+          { label: 'Expected wins', pointsAvailable: '3', probability: '', expected: 6.177 },
+          { label: 'Expected draws', pointsAvailable: '1', probability: '', expected: 0.560 },
+          { label: 'Expected goals', pointsAvailable: '1', probability: '', expected: 12.615 },
+          { label: 'Gets out of group stage', pointsAvailable: '5', probability: '0.931', expected: 4.657 },
+          { label: 'Sweet 16', pointsAvailable: '10', probability: '0.738', expected: 7.382 },
+          { label: 'Elite 8', pointsAvailable: '15', probability: '0.533', expected: 7.991 },
+          { label: 'Final 4', pointsAvailable: '20', probability: '0.339', expected: 6.780 },
+          { label: 'Runner up', pointsAvailable: '25', probability: '0.103', expected: 2.574 },
+          { label: 'Champion', pointsAvailable: '40', probability: '0.090', expected: 3.604 },
+        ],
+      },
+      Brazil: {
+        total: 51.488,
+        parts: [
+          { label: 'Expected wins', pointsAvailable: '3', probability: '', expected: 6.474 },
+          { label: 'Expected draws', pointsAvailable: '1', probability: '', expected: 0.491 },
+          { label: 'Expected goals', pointsAvailable: '1', probability: '', expected: 12.655 },
+          { label: 'Gets out of group stage', pointsAvailable: '5', probability: '0.980', expected: 4.901 },
+          { label: 'Sweet 16', pointsAvailable: '10', probability: '0.708', expected: 7.076 },
+          { label: 'Elite 8', pointsAvailable: '15', probability: '0.515', expected: 7.718 },
+          { label: 'Final 4', pointsAvailable: '20', probability: '0.297', expected: 5.935 },
+          { label: 'Runner up', pointsAvailable: '25', probability: '0.099', expected: 2.474 },
+          { label: 'Champion', pointsAvailable: '40', probability: '0.094', expected: 3.763 },
+        ],
+      },
+      Argentina: {
+        total: 48.674,
+        parts: [
+          { label: 'Expected wins', pointsAvailable: '3', probability: '', expected: 4.551 },
+          { label: 'Expected draws', pointsAvailable: '1', probability: '', expected: 0.315 },
+          { label: 'Expected goals', pointsAvailable: '1', probability: '', expected: 12.495 },
+          { label: 'Gets out of group stage', pointsAvailable: '5', probability: '0.980', expected: 4.899 },
+          { label: 'Sweet 16', pointsAvailable: '10', probability: '0.669', expected: 6.689 },
+          { label: 'Elite 8', pointsAvailable: '15', probability: '0.502', expected: 7.537 },
+          { label: 'Final 4', pointsAvailable: '20', probability: '0.327', expected: 6.536 },
+          { label: 'Runner up', pointsAvailable: '25', probability: '0.105', expected: 2.637 },
+          { label: 'Champion', pointsAvailable: '40', probability: '0.075', expected: 3.014 },
+        ],
+      },
+      Germany: {
+        total: 42.072,
+        parts: [
+          { label: 'Expected wins', pointsAvailable: '3', probability: '', expected: 6.372 },
+          { label: 'Expected draws', pointsAvailable: '1', probability: '', expected: 0.493 },
+          { label: 'Expected goals', pointsAvailable: '1', probability: '', expected: 13.300 },
+          { label: 'Gets out of group stage', pointsAvailable: '5', probability: '0.972', expected: 4.862 },
+          { label: 'Sweet 16', pointsAvailable: '10', probability: '0.679', expected: 6.795 },
+          { label: 'Elite 8', pointsAvailable: '15', probability: '0.321', expected: 4.808 },
+          { label: 'Final 4', pointsAvailable: '20', probability: '0.160', expected: 3.205 },
+          { label: 'Runner up', pointsAvailable: '25', probability: '0.028', expected: 0.691 },
+          { label: 'Champion', pointsAvailable: '40', probability: '0.039', expected: 1.547 },
+        ],
+      },
+      Netherlands: {
+        total: 38.793,
+        parts: [
+          { label: 'Expected wins', pointsAvailable: '3', probability: '', expected: 5.226 },
+          { label: 'Expected draws', pointsAvailable: '1', probability: '', expected: 0.694 },
+          { label: 'Expected goals', pointsAvailable: '1', probability: '', expected: 9.680 },
+          { label: 'Gets out of group stage', pointsAvailable: '5', probability: '0.926', expected: 4.632 },
+          { label: 'Sweet 16', pointsAvailable: '10', probability: '0.541', expected: 5.413 },
+          { label: 'Elite 8', pointsAvailable: '15', probability: '0.389', expected: 5.837 },
+          { label: 'Final 4', pointsAvailable: '20', probability: '0.195', expected: 3.891 },
+          { label: 'Runner up', pointsAvailable: '25', probability: '0.053', expected: 1.316 },
+          { label: 'Champion', pointsAvailable: '40', probability: '0.053', expected: 2.105 },
+        ],
+      },
+      Belgium: {
+        total: 37.549,
+        parts: [
+          { label: 'Expected wins', pointsAvailable: '3', probability: '', expected: 6.171 },
+          { label: 'Expected draws', pointsAvailable: '1', probability: '', expected: 0.581 },
+          { label: 'Expected goals', pointsAvailable: '1', probability: '', expected: 10.660 },
+          { label: 'Gets out of group stage', pointsAvailable: '5', probability: '0.967', expected: 4.834 },
+          { label: 'Sweet 16', pointsAvailable: '10', probability: '0.669', expected: 6.689 },
+          { label: 'Elite 8', pointsAvailable: '15', probability: '0.353', expected: 5.300 },
+          { label: 'Final 4', pointsAvailable: '20', probability: '0.105', expected: 2.099 },
+          { label: 'Runner up', pointsAvailable: '25', probability: '0.022', expected: 0.552 },
+          { label: 'Champion', pointsAvailable: '40', probability: '0.017', expected: 0.663 },
+        ],
+      },
+      USA: {
+        total: 34.839,
+        parts: [
+          { label: 'Expected wins', pointsAvailable: '3', probability: '', expected: 3.120 },
+          { label: 'Expected draws', pointsAvailable: '1', probability: '', expected: 0.461 },
+          { label: 'Expected goals', pointsAvailable: '1', probability: '', expected: 10.700 },
+          { label: 'Gets out of group stage', pointsAvailable: '5', probability: '0.980', expected: 4.898 },
+          { label: 'Sweet 16', pointsAvailable: '10', probability: '0.660', expected: 6.599 },
+          { label: 'Elite 8', pointsAvailable: '15', probability: '0.340', expected: 5.102 },
+          { label: 'Final 4', pointsAvailable: '20', probability: '0.122', expected: 2.436 },
+          { label: 'Runner up', pointsAvailable: '25', probability: '0.020', expected: 0.508 },
+          { label: 'Champion', pointsAvailable: '40', probability: '0.025', expected: 1.015 },
+        ],
+      },
+      Colombia: {
+        total: 34.710,
+        parts: [
+          { label: 'Expected wins', pointsAvailable: '3', probability: '', expected: 4.938 },
+          { label: 'Expected draws', pointsAvailable: '1', probability: '', expected: 0.676 },
+          { label: 'Expected goals', pointsAvailable: '1', probability: '', expected: 8.335 },
+          { label: 'Gets out of group stage', pointsAvailable: '5', probability: '0.924', expected: 4.619 },
+          { label: 'Sweet 16', pointsAvailable: '10', probability: '0.528', expected: 5.283 },
+          { label: 'Elite 8', pointsAvailable: '15', probability: '0.300', expected: 4.505 },
+          { label: 'Final 4', pointsAvailable: '20', probability: '0.181', expected: 3.617 },
+          { label: 'Runner up', pointsAvailable: '25', probability: '0.071', expected: 1.786 },
+          { label: 'Champion', pointsAvailable: '40', probability: '0.024', expected: 0.952 },
+        ],
+      },
+      Norway: {
+        total: 33.124,
+        parts: [
+          { label: 'Expected wins', pointsAvailable: '3', probability: '', expected: 4.410 },
+          { label: 'Expected draws', pointsAvailable: '1', probability: '', expected: 0.644 },
+          { label: 'Expected goals', pointsAvailable: '1', probability: '', expected: 8.115 },
+          { label: 'Gets out of group stage', pointsAvailable: '5', probability: '0.881', expected: 4.403 },
+          { label: 'Sweet 16', pointsAvailable: '10', probability: '0.548', expected: 5.475 },
+          { label: 'Elite 8', pointsAvailable: '15', probability: '0.299', expected: 4.478 },
+          { label: 'Final 4', pointsAvailable: '20', probability: '0.154', expected: 3.086 },
+          { label: 'Runner up', pointsAvailable: '25', probability: '0.045', expected: 1.120 },
+          { label: 'Champion', pointsAvailable: '40', probability: '0.035', expected: 1.393 },
+        ],
+      },
+      Switzerland: {
+        total: 31.998,
+        parts: [
+          { label: 'Expected wins', pointsAvailable: '3', probability: '', expected: 5.592 },
+          { label: 'Expected draws', pointsAvailable: '1', probability: '', expected: 0.642 },
+          { label: 'Expected goals', pointsAvailable: '1', probability: '', expected: 8.875 },
+          { label: 'Gets out of group stage', pointsAvailable: '5', probability: '0.924', expected: 4.619 },
+          { label: 'Sweet 16', pointsAvailable: '10', probability: '0.561', expected: 5.614 },
+          { label: 'Elite 8', pointsAvailable: '15', probability: '0.215', expected: 3.226 },
+          { label: 'Final 4', pointsAvailable: '20', probability: '0.099', expected: 1.972 },
+          { label: 'Runner up', pointsAvailable: '25', probability: '0.022', expected: 0.561 },
+          { label: 'Champion', pointsAvailable: '40', probability: '0.022', expected: 0.897 },
+        ],
+      },
+      Mexico: {
+        total: 31.073,
+        parts: [
+          { label: 'Expected wins', pointsAvailable: '3', probability: '', expected: 3.078 },
+          { label: 'Expected draws', pointsAvailable: '1', probability: '', expected: 0.537 },
+          { label: 'Expected goals', pointsAvailable: '1', probability: '', expected: 6.665 },
+          { label: 'Gets out of group stage', pointsAvailable: '5', probability: '0.995', expected: 4.974 },
+          { label: 'Sweet 16', pointsAvailable: '10', probability: '0.658', expected: 6.575 },
+          { label: 'Elite 8', pointsAvailable: '15', probability: '0.311', expected: 4.658 },
+          { label: 'Final 4', pointsAvailable: '20', probability: '0.140', expected: 2.797 },
+          { label: 'Runner up', pointsAvailable: '25', probability: '0.047', expected: 1.166 },
+          { label: 'Champion', pointsAvailable: '40', probability: '0.016', expected: 0.622 },
+        ],
+      },
+      Japan: {
+        total: 30.368,
+        parts: [
+          { label: 'Expected wins', pointsAvailable: '3', probability: '', expected: 3.891 },
+          { label: 'Expected draws', pointsAvailable: '1', probability: '', expected: 0.791 },
+          { label: 'Expected goals', pointsAvailable: '1', probability: '', expected: 6.550 },
+          { label: 'Gets out of group stage', pointsAvailable: '5', probability: '0.826', expected: 4.132 },
+          { label: 'Sweet 16', pointsAvailable: '10', probability: '0.439', expected: 4.386 },
+          { label: 'Elite 8', pointsAvailable: '15', probability: '0.279', expected: 4.178 },
+          { label: 'Final 4', pointsAvailable: '20', probability: '0.174', expected: 3.472 },
+          { label: 'Runner up', pointsAvailable: '25', probability: '0.046', expected: 1.142 },
+          { label: 'Champion', pointsAvailable: '40', probability: '0.046', expected: 1.826 },
+        ],
+      },
+      Croatia: {
+        total: 30.005,
+        parts: [
+          { label: 'Expected wins', pointsAvailable: '3', probability: '', expected: 4.248 },
+          { label: 'Expected draws', pointsAvailable: '1', probability: '', expected: 0.729 },
+          { label: 'Expected goals', pointsAvailable: '1', probability: '', expected: 6.605 },
+          { label: 'Gets out of group stage', pointsAvailable: '5', probability: '0.839', expected: 4.196 },
+          { label: 'Sweet 16', pointsAvailable: '10', probability: '0.505', expected: 5.050 },
+          { label: 'Elite 8', pointsAvailable: '15', probability: '0.259', expected: 3.886 },
+          { label: 'Final 4', pointsAvailable: '20', probability: '0.161', expected: 3.215 },
+          { label: 'Runner up', pointsAvailable: '25', probability: '0.040', expected: 1.005 },
+          { label: 'Champion', pointsAvailable: '40', probability: '0.027', expected: 1.072 },
+        ],
+      },
+      Uruguay: {
+        total: 27.734,
+        parts: [
+          { label: 'Expected wins', pointsAvailable: '3', probability: '', expected: 4.632 },
+          { label: 'Expected draws', pointsAvailable: '1', probability: '', expected: 0.634 },
+          { label: 'Expected goals', pointsAvailable: '1', probability: '', expected: 7.235 },
+          { label: 'Gets out of group stage', pointsAvailable: '5', probability: '0.861', expected: 4.303 },
+          { label: 'Sweet 16', pointsAvailable: '10', probability: '0.382', expected: 3.817 },
+          { label: 'Elite 8', pointsAvailable: '15', probability: '0.237', expected: 3.555 },
+          { label: 'Final 4', pointsAvailable: '20', probability: '0.102', expected: 2.047 },
+          { label: 'Runner up', pointsAvailable: '25', probability: '0.023', expected: 0.581 },
+          { label: 'Champion', pointsAvailable: '40', probability: '0.023', expected: 0.930 },
+        ],
+      },
+      Ecuador: {
+        total: 26.524,
+        parts: [
+          { label: 'Expected wins', pointsAvailable: '3', probability: '', expected: 4.212 },
+          { label: 'Expected draws', pointsAvailable: '1', probability: '', expected: 0.698 },
+          { label: 'Expected goals', pointsAvailable: '1', probability: '', expected: 6.980 },
+          { label: 'Gets out of group stage', pointsAvailable: '5', probability: '0.868', expected: 4.341 },
+          { label: 'Sweet 16', pointsAvailable: '10', probability: '0.459', expected: 4.587 },
+          { label: 'Elite 8', pointsAvailable: '15', probability: '0.210', expected: 3.145 },
+          { label: 'Final 4', pointsAvailable: '20', probability: '0.068', expected: 1.366 },
+          { label: 'Runner up', pointsAvailable: '25', probability: '0.024', expected: 0.610 },
+          { label: 'Champion', pointsAvailable: '40', probability: '0.015', expected: 0.585 },
+        ],
+      },
+      Turkiye: {
+        total: 26.383,
+        parts: [
+          { label: 'Expected wins', pointsAvailable: '3', probability: '', expected: 4.185 },
+          { label: 'Expected draws', pointsAvailable: '1', probability: '', expected: 0.784 },
+          { label: 'Expected goals', pointsAvailable: '1', probability: '', expected: 6.880 },
+          { label: 'Gets out of group stage', pointsAvailable: '5', probability: '0.801', expected: 4.006 },
+          { label: 'Sweet 16', pointsAvailable: '10', probability: '0.515', expected: 5.146 },
+          { label: 'Elite 8', pointsAvailable: '15', probability: '0.204', expected: 3.061 },
+          { label: 'Final 4', pointsAvailable: '20', probability: '0.066', expected: 1.326 },
+          { label: 'Runner up', pointsAvailable: '25', probability: '0.015', expected: 0.383 },
+          { label: 'Champion', pointsAvailable: '40', probability: '0.015', expected: 0.612 },
+        ],
+      },
+      Morocco: {
+        total: 26.356,
+        parts: [
+          { label: 'Expected wins', pointsAvailable: '3', probability: '', expected: 4.158 },
+          { label: 'Expected draws', pointsAvailable: '1', probability: '', expected: 0.709 },
+          { label: 'Expected goals', pointsAvailable: '1', probability: '', expected: 7.120 },
+          { label: 'Gets out of group stage', pointsAvailable: '5', probability: '0.865', expected: 4.326 },
+          { label: 'Sweet 16', pointsAvailable: '10', probability: '0.398', expected: 3.984 },
+          { label: 'Elite 8', pointsAvailable: '15', probability: '0.217', expected: 3.261 },
+          { label: 'Final 4', pointsAvailable: '20', probability: '0.083', expected: 1.658 },
+          { label: 'Runner up', pointsAvailable: '25', probability: '0.021', expected: 0.518 },
+          { label: 'Champion', pointsAvailable: '40', probability: '0.016', expected: 0.622 },
+        ],
+      },
+      "Cote d'Ivoire": {
+        total: 24.464,
+        parts: [
+          { label: 'Expected wins', pointsAvailable: '3', probability: '', expected: 3.702 },
+          { label: 'Expected draws', pointsAvailable: '1', probability: '', expected: 0.670 },
+          { label: 'Expected goals', pointsAvailable: '1', probability: '', expected: 5.905 },
+          { label: 'Gets out of group stage', pointsAvailable: '5', probability: '0.802', expected: 4.008 },
+          { label: 'Sweet 16', pointsAvailable: '10', probability: '0.350', expected: 3.497 },
+          { label: 'Elite 8', pointsAvailable: '15', probability: '0.181', expected: 2.717 },
+          { label: 'Final 4', pointsAvailable: '20', probability: '0.125', expected: 2.500 },
+          { label: 'Runner up', pointsAvailable: '25', probability: '0.017', expected: 0.431 },
+          { label: 'Champion', pointsAvailable: '40', probability: '0.026', expected: 1.034 },
+        ],
+      },
+      'Korea Republic': {
+        total: 22.999,
+        parts: [
+          { label: 'Expected wins', pointsAvailable: '3', probability: '', expected: 2.601 },
+          { label: 'Expected draws', pointsAvailable: '1', probability: '', expected: 0.502 },
+          { label: 'Expected goals', pointsAvailable: '1', probability: '', expected: 6.600 },
+          { label: 'Gets out of group stage', pointsAvailable: '5', probability: '0.950', expected: 4.752 },
+          { label: 'Sweet 16', pointsAvailable: '10', probability: '0.485', expected: 4.854 },
+          { label: 'Elite 8', pointsAvailable: '15', probability: '0.139', expected: 2.080 },
+          { label: 'Final 4', pointsAvailable: '20', probability: '0.045', expected: 0.891 },
+          { label: 'Runner up', pointsAvailable: '25', probability: '0.005', expected: 0.124 },
+          { label: 'Champion', pointsAvailable: '40', probability: '0.015', expected: 0.594 },
+        ],
+      },
+      Egypt: {
+        total: 22.349,
+        parts: [
+          { label: 'Expected wins', pointsAvailable: '3', probability: '', expected: 3.435 },
+          { label: 'Expected draws', pointsAvailable: '1', probability: '', expected: 0.784 },
+          { label: 'Expected goals', pointsAvailable: '1', probability: '', expected: 5.275 },
+          { label: 'Gets out of group stage', pointsAvailable: '5', probability: '0.752', expected: 3.762 },
+          { label: 'Sweet 16', pointsAvailable: '10', probability: '0.346', expected: 3.460 },
+          { label: 'Elite 8', pointsAvailable: '15', probability: '0.164', expected: 2.455 },
+          { label: 'Final 4', pointsAvailable: '20', probability: '0.084', expected: 1.682 },
+          { label: 'Runner up', pointsAvailable: '25', probability: '0.037', expected: 0.935 },
+          { label: 'Champion', pointsAvailable: '40', probability: '0.014', expected: 0.561 },
+        ],
+      },
+      Canada: {
+        total: 20.484,
+        parts: [
+          { label: 'Expected wins', pointsAvailable: '3', probability: '', expected: 3.060 },
+          { label: 'Expected draws', pointsAvailable: '1', probability: '', expected: 0.439 },
+          { label: 'Expected goals', pointsAvailable: '1', probability: '', expected: 6.485 },
+          { label: 'Gets out of group stage', pointsAvailable: '5', probability: '0.827', expected: 4.133 },
+          { label: 'Sweet 16', pointsAvailable: '10', probability: '0.382', expected: 3.817 },
+          { label: 'Elite 8', pointsAvailable: '15', probability: '0.109', expected: 1.634 },
+          { label: 'Final 4', pointsAvailable: '20', probability: '0.030', expected: 0.594 },
+          { label: 'Runner up', pointsAvailable: '25', probability: '0.005', expected: 0.124 },
+          { label: 'Champion', pointsAvailable: '40', probability: '0.005', expected: 0.198 },
+        ],
+      },
+      Czechia: {
+        total: 20.426,
+        parts: [
+          { label: 'Expected wins', pointsAvailable: '3', probability: '', expected: 2.229 },
+          { label: 'Expected draws', pointsAvailable: '1', probability: '', expected: 0.508 },
+          { label: 'Expected goals', pointsAvailable: '1', probability: '', expected: 4.890 },
+          { label: 'Gets out of group stage', pointsAvailable: '5', probability: '0.628', expected: 3.141 },
+          { label: 'Sweet 16', pointsAvailable: '10', probability: '0.350', expected: 3.497 },
+          { label: 'Elite 8', pointsAvailable: '15', probability: '0.198', expected: 2.976 },
+          { label: 'Final 4', pointsAvailable: '20', probability: '0.101', expected: 2.024 },
+          { label: 'Runner up', pointsAvailable: '25', probability: '0.013', expected: 0.317 },
+          { label: 'Champion', pointsAvailable: '40', probability: '0.021', expected: 0.844 },
+        ],
+      },
+      Senegal: {
+        total: 20.371,
+        parts: [
+          { label: 'Expected wins', pointsAvailable: '3', probability: '', expected: 3.294 },
+          { label: 'Expected draws', pointsAvailable: '1', probability: '', expected: 0.670 },
+          { label: 'Expected goals', pointsAvailable: '1', probability: '', expected: 5.570 },
+          { label: 'Gets out of group stage', pointsAvailable: '5', probability: '0.701', expected: 3.503 },
+          { label: 'Sweet 16', pointsAvailable: '10', probability: '0.340', expected: 3.401 },
+          { label: 'Elite 8', pointsAvailable: '15', probability: '0.142', expected: 2.131 },
+          { label: 'Final 4', pointsAvailable: '20', probability: '0.061', expected: 1.218 },
+          { label: 'Runner up', pointsAvailable: '25', probability: '0.015', expected: 0.381 },
+          { label: 'Champion', pointsAvailable: '40', probability: '0.005', expected: 0.203 },
+        ],
+      },
+      Sweden: {
+        total: 19.619,
+        parts: [
+          { label: 'Expected wins', pointsAvailable: '3', probability: '', expected: 2.865 },
+          { label: 'Expected draws', pointsAvailable: '1', probability: '', expected: 0.766 },
+          { label: 'Expected goals', pointsAvailable: '1', probability: '', expected: 4.670 },
+          { label: 'Gets out of group stage', pointsAvailable: '5', probability: '0.658', expected: 3.288 },
+          { label: 'Sweet 16', pointsAvailable: '10', probability: '0.273', expected: 2.732 },
+          { label: 'Elite 8', pointsAvailable: '15', probability: '0.149', expected: 2.242 },
+          { label: 'Final 4', pointsAvailable: '20', probability: '0.090', expected: 1.795 },
+          { label: 'Runner up', pointsAvailable: '25', probability: '0.030', expected: 0.748 },
+          { label: 'Champion', pointsAvailable: '40', probability: '0.013', expected: 0.513 },
+        ],
+      },
+      'Bosnia and Herzegovina': {
+        total: 17.817,
+        parts: [
+          { label: 'Expected wins', pointsAvailable: '3', probability: '', expected: 2.265 },
+          { label: 'Expected draws', pointsAvailable: '1', probability: '', expected: 0.475 },
+          { label: 'Expected goals', pointsAvailable: '1', probability: '', expected: 4.685 },
+          { label: 'Gets out of group stage', pointsAvailable: '5', probability: '0.717', expected: 3.584 },
+          { label: 'Sweet 16', pointsAvailable: '10', probability: '0.312', expected: 3.125 },
+          { label: 'Elite 8', pointsAvailable: '15', probability: '0.117', expected: 1.756 },
+          { label: 'Final 4', pointsAvailable: '20', probability: '0.049', expected: 0.976 },
+          { label: 'Runner up', pointsAvailable: '25', probability: '0.015', expected: 0.366 },
+          { label: 'Champion', pointsAvailable: '40', probability: '0.015', expected: 0.585 },
+        ],
+      },
+      Algeria: {
+        total: 17.805,
+        parts: [
+          { label: 'Expected wins', pointsAvailable: '3', probability: '', expected: 2.235 },
+          { label: 'Expected draws', pointsAvailable: '1', probability: '', expected: 0.416 },
+          { label: 'Expected goals', pointsAvailable: '1', probability: '', expected: 4.960 },
+          { label: 'Gets out of group stage', pointsAvailable: '5', probability: '0.718', expected: 3.588 },
+          { label: 'Sweet 16', pointsAvailable: '10', probability: '0.278', expected: 2.778 },
+          { label: 'Elite 8', pointsAvailable: '15', probability: '0.158', expected: 2.370 },
+          { label: 'Final 4', pointsAvailable: '20', probability: '0.057', expected: 1.148 },
+          { label: 'Runner up', pointsAvailable: '25', probability: '0.005', expected: 0.120 },
+          { label: 'Champion', pointsAvailable: '40', probability: '0.005', expected: 0.191 },
+        ],
+      },
+      Scotland: {
+        total: 17.062,
+        parts: [
+          { label: 'Expected wins', pointsAvailable: '3', probability: '', expected: 2.970 },
+          { label: 'Expected draws', pointsAvailable: '1', probability: '', expected: 0.682 },
+          { label: 'Expected goals', pointsAvailable: '1', probability: '', expected: 4.910 },
+          { label: 'Gets out of group stage', pointsAvailable: '5', probability: '0.724', expected: 3.619 },
+          { label: 'Sweet 16', pointsAvailable: '10', probability: '0.253', expected: 2.525 },
+          { label: 'Elite 8', pointsAvailable: '15', probability: '0.105', expected: 1.571 },
+          { label: 'Final 4', pointsAvailable: '20', probability: '0.024', expected: 0.476 },
+          { label: 'Runner up', pointsAvailable: '25', probability: '0.005', expected: 0.119 },
+          { label: 'Champion', pointsAvailable: '40', probability: '0.005', expected: 0.190 },
+        ],
+      },
+      Ghana: {
+        total: 16.800,
+        parts: [
+          { label: 'Expected wins', pointsAvailable: '3', probability: '', expected: 2.070 },
+          { label: 'Expected draws', pointsAvailable: '1', probability: '', expected: 0.689 },
+          { label: 'Expected goals', pointsAvailable: '1', probability: '', expected: 4.000 },
+          { label: 'Gets out of group stage', pointsAvailable: '5', probability: '0.548', expected: 2.738 },
+          { label: 'Sweet 16', pointsAvailable: '10', probability: '0.237', expected: 2.370 },
+          { label: 'Elite 8', pointsAvailable: '15', probability: '0.132', expected: 1.974 },
+          { label: 'Final 4', pointsAvailable: '20', probability: '0.083', expected: 1.667 },
+          { label: 'Runner up', pointsAvailable: '25', probability: '0.031', expected: 0.768 },
+          { label: 'Champion', pointsAvailable: '40', probability: '0.013', expected: 0.526 },
+        ],
+      },
+      Paraguay: {
+        total: 15.049,
+        parts: [
+          { label: 'Expected wins', pointsAvailable: '3', probability: '', expected: 2.073 },
+          { label: 'Expected draws', pointsAvailable: '1', probability: '', expected: 0.570 },
+          { label: 'Expected goals', pointsAvailable: '1', probability: '', expected: 4.275 },
+          { label: 'Gets out of group stage', pointsAvailable: '5', probability: '0.422', expected: 2.110 },
+          { label: 'Sweet 16', pointsAvailable: '10', probability: '0.240', expected: 2.398 },
+          { label: 'Elite 8', pointsAvailable: '15', probability: '0.116', expected: 1.734 },
+          { label: 'Final 4', pointsAvailable: '20', probability: '0.044', expected: 0.889 },
+          { label: 'Runner up', pointsAvailable: '25', probability: '0.004', expected: 0.111 },
+          { label: 'Champion', pointsAvailable: '40', probability: '0.022', expected: 0.889 },
+        ],
+      },
+      Uzbekistan: {
+        total: 14.141,
+        parts: [
+          { label: 'Expected wins', pointsAvailable: '3', probability: '', expected: 1.422 },
+          { label: 'Expected draws', pointsAvailable: '1', probability: '', expected: 0.614 },
+          { label: 'Expected goals', pointsAvailable: '1', probability: '', expected: 2.915 },
+          { label: 'Gets out of group stage', pointsAvailable: '5', probability: '0.402', expected: 2.008 },
+          { label: 'Sweet 16', pointsAvailable: '10', probability: '0.179', expected: 1.789 },
+          { label: 'Elite 8', pointsAvailable: '15', probability: '0.109', expected: 1.638 },
+          { label: 'Final 4', pointsAvailable: '20', probability: '0.087', expected: 1.747 },
+          { label: 'Runner up', pointsAvailable: '25', probability: '0.017', expected: 0.436 },
+          { label: 'Champion', pointsAvailable: '40', probability: '0.039', expected: 1.572 },
+        ],
+      },
+      'DR Congo': {
+        total: 13.945,
+        parts: [
+          { label: 'Expected wins', pointsAvailable: '3', probability: '', expected: 1.809 },
+          { label: 'Expected draws', pointsAvailable: '1', probability: '', expected: 0.653 },
+          { label: 'Expected goals', pointsAvailable: '1', probability: '', expected: 3.490 },
+          { label: 'Gets out of group stage', pointsAvailable: '5', probability: '0.490', expected: 2.451 },
+          { label: 'Sweet 16', pointsAvailable: '10', probability: '0.194', expected: 1.938 },
+          { label: 'Elite 8', pointsAvailable: '15', probability: '0.104', expected: 1.554 },
+          { label: 'Final 4', pointsAvailable: '20', probability: '0.077', expected: 1.531 },
+          { label: 'Runner up', pointsAvailable: '25', probability: '0.014', expected: 0.338 },
+          { label: 'Champion', pointsAvailable: '40', probability: '0.005', expected: 0.180 },
+        ],
+      },
+      Australia: {
+        total: 12.609,
+        parts: [
+          { label: 'Expected wins', pointsAvailable: '3', probability: '', expected: 1.773 },
+          { label: 'Expected draws', pointsAvailable: '1', probability: '', expected: 0.749 },
+          { label: 'Expected goals', pointsAvailable: '1', probability: '', expected: 3.415 },
+          { label: 'Gets out of group stage', pointsAvailable: '5', probability: '0.498', expected: 2.488 },
+          { label: 'Sweet 16', pointsAvailable: '10', probability: '0.211', expected: 2.114 },
+          { label: 'Elite 8', pointsAvailable: '15', probability: '0.084', expected: 1.255 },
+          { label: 'Final 4', pointsAvailable: '20', probability: '0.026', expected: 0.529 },
+          { label: 'Runner up', pointsAvailable: '25', probability: '0.004', expected: 0.110 },
+          { label: 'Champion', pointsAvailable: '40', probability: '0.004', expected: 0.176 },
+        ],
+      },
+      'Saudi Arabia': {
+        total: 10.777,
+        parts: [
+          { label: 'Expected wins', pointsAvailable: '3', probability: '', expected: 1.431 },
+          { label: 'Expected draws', pointsAvailable: '1', probability: '', expected: 0.537 },
+          { label: 'Expected goals', pointsAvailable: '1', probability: '', expected: 3.390 },
+          { label: 'Gets out of group stage', pointsAvailable: '5', probability: '0.360', expected: 1.799 },
+          { label: 'Sweet 16', pointsAvailable: '10', probability: '0.138', expected: 1.379 },
+          { label: 'Elite 8', pointsAvailable: '15', probability: '0.059', expected: 0.887 },
+          { label: 'Final 4', pointsAvailable: '20', probability: '0.030', expected: 0.591 },
+          { label: 'Runner up', pointsAvailable: '25', probability: '0.015', expected: 0.369 },
+          { label: 'Champion', pointsAvailable: '40', probability: '0.010', expected: 0.394 },
+        ],
+      },
+      Tunisia: {
+        total: 10.437,
+        parts: [
+          { label: 'Expected wins', pointsAvailable: '3', probability: '', expected: 1.533 },
+          { label: 'Expected draws', pointsAvailable: '1', probability: '', expected: 0.739 },
+          { label: 'Expected goals', pointsAvailable: '1', probability: '', expected: 3.065 },
+          { label: 'Gets out of group stage', pointsAvailable: '5', probability: '0.358', expected: 1.792 },
+          { label: 'Sweet 16', pointsAvailable: '10', probability: '0.139', expected: 1.393 },
+          { label: 'Elite 8', pointsAvailable: '15', probability: '0.060', expected: 0.896 },
+          { label: 'Final 4', pointsAvailable: '20', probability: '0.035', expected: 0.697 },
+          { label: 'Runner up', pointsAvailable: '25', probability: '0.005', expected: 0.124 },
+          { label: 'Champion', pointsAvailable: '40', probability: '0.005', expected: 0.199 },
+        ],
+      },
+      Austria: {
+        total: 10.087,
+        parts: [
+          { label: 'Expected wins', pointsAvailable: '3', probability: '', expected: 0.000 },
+          { label: 'Expected draws', pointsAvailable: '1', probability: '', expected: 0.000 },
+          { label: 'Expected goals', pointsAvailable: '1', probability: '', expected: 3.415 },
+          { label: 'Gets out of group stage', pointsAvailable: '5', probability: '0.498', expected: 2.488 },
+          { label: 'Sweet 16', pointsAvailable: '10', probability: '0.211', expected: 2.114 },
+          { label: 'Elite 8', pointsAvailable: '15', probability: '0.084', expected: 1.255 },
+          { label: 'Final 4', pointsAvailable: '20', probability: '0.026', expected: 0.529 },
+          { label: 'Runner up', pointsAvailable: '25', probability: '0.004', expected: 0.110 },
+          { label: 'Champion', pointsAvailable: '40', probability: '0.004', expected: 0.176 },
+        ],
+      },
+      Iran: {
+        total: 9.744,
+        parts: [
+          { label: 'Expected wins', pointsAvailable: '3', probability: '', expected: 2.730 },
+          { label: 'Expected draws', pointsAvailable: '1', probability: '', expected: 0.771 },
+          { label: 'Expected goals', pointsAvailable: '1', probability: '', expected: 0.000 },
+          { label: 'Gets out of group stage', pointsAvailable: '5', probability: '0.627', expected: 3.134 },
+          { label: 'Sweet 16', pointsAvailable: '10', probability: '0.189', expected: 1.890 },
+          { label: 'Elite 8', pointsAvailable: '15', probability: '0.040', expected: 0.597 },
+          { label: 'Final 4', pointsAvailable: '20', probability: '0.015', expected: 0.299 },
+          { label: 'Runner up', pointsAvailable: '25', probability: '0.005', expected: 0.124 },
+          { label: 'Champion', pointsAvailable: '40', probability: '0.005', expected: 0.199 },
+        ],
+      },
+      'Cape Verde': {
+        total: 9.274,
+        parts: [
+          { label: 'Expected wins', pointsAvailable: '3', probability: '', expected: 1.698 },
+          { label: 'Expected draws', pointsAvailable: '1', probability: '', expected: 0.515 },
+          { label: 'Expected goals', pointsAvailable: '1', probability: '', expected: 2.760 },
+          { label: 'Gets out of group stage', pointsAvailable: '5', probability: '0.362', expected: 1.812 },
+          { label: 'Sweet 16', pointsAvailable: '10', probability: '0.122', expected: 1.222 },
+          { label: 'Elite 8', pointsAvailable: '15', probability: '0.031', expected: 0.459 },
+          { label: 'Final 4', pointsAvailable: '20', probability: '0.017', expected: 0.349 },
+          { label: 'Runner up', pointsAvailable: '25', probability: '0.004', expected: 0.109 },
+          { label: 'Champion', pointsAvailable: '40', probability: '0.009', expected: 0.349 },
+        ],
+      },
+      Qatar: {
+        total: 9.225,
+        parts: [
+          { label: 'Expected wins', pointsAvailable: '3', probability: '', expected: 0.939 },
+          { label: 'Expected draws', pointsAvailable: '1', probability: '', expected: 0.541 },
+          { label: 'Expected goals', pointsAvailable: '1', probability: '', expected: 2.365 },
+          { label: 'Gets out of group stage', pointsAvailable: '5', probability: '0.269', expected: 1.344 },
+          { label: 'Sweet 16', pointsAvailable: '10', probability: '0.108', expected: 1.076 },
+          { label: 'Elite 8', pointsAvailable: '15', probability: '0.067', expected: 1.009 },
+          { label: 'Final 4', pointsAvailable: '20', probability: '0.045', expected: 0.897 },
+          { label: 'Runner up', pointsAvailable: '25', probability: '0.013', expected: 0.336 },
+          { label: 'Champion', pointsAvailable: '40', probability: '0.018', expected: 0.717 },
+        ],
+      },
+      Panama: {
+        total: 9.001,
+        parts: [
+          { label: 'Expected wins', pointsAvailable: '3', probability: '', expected: 1.542 },
+          { label: 'Expected draws', pointsAvailable: '1', probability: '', expected: 0.664 },
+          { label: 'Expected goals', pointsAvailable: '1', probability: '', expected: 2.910 },
+          { label: 'Gets out of group stage', pointsAvailable: '5', probability: '0.355', expected: 1.773 },
+          { label: 'Sweet 16', pointsAvailable: '10', probability: '0.092', expected: 0.923 },
+          { label: 'Elite 8', pointsAvailable: '15', probability: '0.039', expected: 0.583 },
+          { label: 'Final 4', pointsAvailable: '20', probability: '0.015', expected: 0.291 },
+          { label: 'Runner up', pointsAvailable: '25', probability: '0.005', expected: 0.121 },
+          { label: 'Champion', pointsAvailable: '40', probability: '0.005', expected: 0.194 },
+        ],
+      },
+      Jordan: {
+        total: 8.074,
+        parts: [
+          { label: 'Expected wins', pointsAvailable: '3', probability: '', expected: 0.624 },
+          { label: 'Expected draws', pointsAvailable: '1', probability: '', expected: 0.327 },
+          { label: 'Expected goals', pointsAvailable: '1', probability: '', expected: 2.520 },
+          { label: 'Gets out of group stage', pointsAvailable: '5', probability: '0.254', expected: 1.269 },
+          { label: 'Sweet 16', pointsAvailable: '10', probability: '0.144', expected: 1.443 },
+          { label: 'Elite 8', pointsAvailable: '15', probability: '0.085', expected: 1.269 },
+          { label: 'Final 4', pointsAvailable: '20', probability: '0.015', expected: 0.299 },
+          { label: 'Runner up', pointsAvailable: '25', probability: '0.005', expected: 0.124 },
+          { label: 'Champion', pointsAvailable: '40', probability: '0.005', expected: 0.199 },
+        ],
+      },
+      'South Africa': {
+        total: 7.890,
+        parts: [
+          { label: 'Expected wins', pointsAvailable: '3', probability: '', expected: 1.065 },
+          { label: 'Expected draws', pointsAvailable: '1', probability: '', expected: 0.473 },
+          { label: 'Expected goals', pointsAvailable: '1', probability: '', expected: 2.535 },
+          { label: 'Gets out of group stage', pointsAvailable: '5', probability: '0.208', expected: 1.040 },
+          { label: 'Sweet 16', pointsAvailable: '10', probability: '0.130', expected: 1.304 },
+          { label: 'Elite 8', pointsAvailable: '15', probability: '0.058', expected: 0.870 },
+          { label: 'Final 4', pointsAvailable: '20', probability: '0.014', expected: 0.290 },
+          { label: 'Runner up', pointsAvailable: '25', probability: '0.005', expected: 0.121 },
+          { label: 'Champion', pointsAvailable: '40', probability: '0.005', expected: 0.193 },
+        ],
+      },
+      Iraq: {
+        total: 7.079,
+        parts: [
+          { label: 'Expected wins', pointsAvailable: '3', probability: '', expected: 0.642 },
+          { label: 'Expected draws', pointsAvailable: '1', probability: '', expected: 0.412 },
+          { label: 'Expected goals', pointsAvailable: '1', probability: '', expected: 1.770 },
+          { label: 'Gets out of group stage', pointsAvailable: '5', probability: '0.168', expected: 0.842 },
+          { label: 'Sweet 16', pointsAvailable: '10', probability: '0.111', expected: 1.106 },
+          { label: 'Elite 8', pointsAvailable: '15', probability: '0.072', expected: 1.081 },
+          { label: 'Final 4', pointsAvailable: '20', probability: '0.034', expected: 0.673 },
+          { label: 'Runner up', pointsAvailable: '25', probability: '0.014', expected: 0.361 },
+          { label: 'Champion', pointsAvailable: '40', probability: '0.005', expected: 0.192 },
+        ],
+      },
+      Haiti: {
+        total: 7.077,
+        parts: [
+          { label: 'Expected wins', pointsAvailable: '3', probability: '', expected: 0.912 },
+          { label: 'Expected draws', pointsAvailable: '1', probability: '', expected: 0.443 },
+          { label: 'Expected goals', pointsAvailable: '1', probability: '', expected: 2.220 },
+          { label: 'Gets out of group stage', pointsAvailable: '5', probability: '0.183', expected: 0.917 },
+          { label: 'Sweet 16', pointsAvailable: '10', probability: '0.082', expected: 0.821 },
+          { label: 'Elite 8', pointsAvailable: '15', probability: '0.077', expected: 1.159 },
+          { label: 'Final 4', pointsAvailable: '20', probability: '0.014', expected: 0.290 },
+          { label: 'Runner up', pointsAvailable: '25', probability: '0.005', expected: 0.121 },
+          { label: 'Champion', pointsAvailable: '40', probability: '0.005', expected: 0.193 },
+        ],
+      },
+      'New Zealand': {
+        total: 6.190,
+        parts: [
+          { label: 'Expected wins', pointsAvailable: '3', probability: '', expected: 1.452 },
+          { label: 'Expected draws', pointsAvailable: '1', probability: '', expected: 0.673 },
+          { label: 'Expected goals', pointsAvailable: '1', probability: '', expected: 0.000 },
+          { label: 'Gets out of group stage', pointsAvailable: '5', probability: '0.332', expected: 1.661 },
+          { label: 'Sweet 16', pointsAvailable: '10', probability: '0.115', expected: 1.153 },
+          { label: 'Elite 8', pointsAvailable: '15', probability: '0.043', expected: 0.649 },
+          { label: 'Final 4', pointsAvailable: '20', probability: '0.014', expected: 0.288 },
+          { label: 'Runner up', pointsAvailable: '25', probability: '0.005', expected: 0.120 },
+          { label: 'Champion', pointsAvailable: '40', probability: '0.005', expected: 0.192 },
+        ],
+      },
+      Curacao: {
+        total: 6.153,
+        parts: [
+          { label: 'Expected wins', pointsAvailable: '3', probability: '', expected: 0.465 },
+          { label: 'Expected draws', pointsAvailable: '1', probability: '', expected: 0.305 },
+          { label: 'Expected goals', pointsAvailable: '1', probability: '', expected: 1.710 },
+          { label: 'Gets out of group stage', pointsAvailable: '5', probability: '0.128', expected: 0.640 },
+          { label: 'Sweet 16', pointsAvailable: '10', probability: '0.076', expected: 0.758 },
+          { label: 'Elite 8', pointsAvailable: '15', probability: '0.052', expected: 0.782 },
+          { label: 'Final 4', pointsAvailable: '20', probability: '0.038', expected: 0.758 },
+          { label: 'Runner up', pointsAvailable: '25', probability: '0.014', expected: 0.355 },
+          { label: 'Champion', pointsAvailable: '40', probability: '0.009', expected: 0.379 },
+        ],
+      },
+    };
+    const normalizedTeamExpectedSeasonPoints = Object.fromEntries(
+      Object.entries(teamExpectedSeasonPoints).map(([name, points]) => [normalize(name), points])
+    );
+    const normalizedTeamExpectedPointBreakdowns = Object.fromEntries(
+      Object.entries(teamExpectedPointBreakdowns).map(([name, breakdown]) => [normalize(name), breakdown])
+    );
     let teamStats = {};
 
     function totalPoints(player) {
@@ -534,9 +1376,11 @@
           ${rankedTeams(teams).map(team => {
             const theme = teamThemes[team.name] || fallbackTheme;
             const score = teamScore(team.name);
+            const estimatedRos = estimatedRestOfSeasonPoints(team.name);
+            const breakdown = expectedPointBreakdown(team.name);
             return `
-            <li>
-              <a class="team-row" href="index.html?team=${encodeURIComponent(rosterTeamName(team.name))}" style="--team-primary: ${escapeHtml(theme.primary)}; --team-secondary: ${escapeHtml(theme.secondary)};">
+            <li class="team-item" style="--team-primary: ${escapeHtml(theme.primary)}; --team-secondary: ${escapeHtml(theme.secondary)};">
+              <a class="team-row" href="index.html?team=${encodeURIComponent(rosterTeamName(team.name))}">
                 <span class="team-identity">
                   ${flagMarkup(team.name, theme)}
                   <span>
@@ -546,6 +1390,10 @@
                 </span>
                 <span class="team-points">${escapeHtml(score.total)}</span>
               </a>
+              <span class="team-values estimate-details">
+                <span class="team-estimate" tabindex="0">${escapeHtml(formatEstimate(estimatedRos))} ROS</span>
+                ${estimateBreakdownMarkup(team.name, breakdown)}
+              </span>
             </li>
           `}).join('')}
         </ul>
@@ -579,6 +1427,144 @@
         stageBonus,
         total: matchPoints + stageBonus,
       };
+    }
+
+    function estimatedRestOfSeasonPoints(teamName) {
+      const expectedTotal = expectedSeasonPoints(teamName);
+      if (expectedTotal === null) {
+        return null;
+      }
+      return expectedTotal;
+    }
+
+    function expectedSeasonPoints(teamName) {
+      const candidates = [teamName, ...(teamAliases[teamName] || [])];
+      for (const candidate of candidates) {
+        const points = normalizedTeamExpectedSeasonPoints[normalize(candidate)];
+        if (typeof points === 'number') {
+          return points;
+        }
+      }
+      return null;
+    }
+
+    function expectedPointBreakdown(teamName) {
+      const candidates = [teamName, ...(teamAliases[teamName] || [])];
+      for (const candidate of candidates) {
+        const breakdown = normalizedTeamExpectedPointBreakdowns[normalize(candidate)];
+        if (breakdown) {
+          return breakdown;
+        }
+      }
+      return null;
+    }
+
+    function estimateBreakdownMarkup(teamName, breakdown) {
+      if (!breakdown) {
+        return `
+          <div class="estimate-popover">
+            <h3>${escapeHtml(teamName)} expected points</h3>
+            <p class="empty-note">Breakdown unavailable.</p>
+          </div>
+        `;
+      }
+
+      const expectedStats = breakdown.parts.filter(part => part.probability === '');
+      const bonusStats = breakdown.parts.filter(part => part.probability !== '');
+
+      return `
+        <div class="estimate-popover">
+          <h3>${escapeHtml(teamName)} expected points</h3>
+          <div class="estimate-section-title">Scoring production</div>
+          ${expectedStatsTableMarkup(expectedStats)}
+          <div class="estimate-section-title">Bonus probabilities</div>
+          ${bonusStatsTableMarkup(bonusStats)}
+          <table class="estimate-table">
+            <tbody>
+              <tr class="estimate-total">
+                <td>Rest of season</td>
+                <td></td>
+                <td></td>
+                <td>${escapeHtml(formatEstimate(breakdown.total))}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    function expectedStatsTableMarkup(parts) {
+      return `
+        <table class="estimate-table">
+          <thead>
+            <tr>
+              <th>Source</th>
+              <th>Unit</th>
+              <th>Remaining expected</th>
+              <th>Exp</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${parts.map(part => `
+              <tr>
+                <td>${escapeHtml(productionLabel(part.label))}</td>
+                <td>${escapeHtml(part.pointsAvailable)}</td>
+                <td>${escapeHtml(formatEstimate(expectedUnits(part)))}</td>
+                <td>${escapeHtml(formatEstimate(part.expected))}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `;
+    }
+
+    function bonusStatsTableMarkup(parts) {
+      return `
+        <table class="estimate-table">
+          <thead>
+            <tr>
+              <th>Source</th>
+              <th>Unit</th>
+              <th>Prob</th>
+              <th>Exp</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${parts.map(part => `
+              <tr>
+                <td>${escapeHtml(part.label)}</td>
+                <td>${escapeHtml(part.pointsAvailable)}</td>
+                <td>${escapeHtml(formatProbability(part.probability))}</td>
+                <td>${escapeHtml(formatEstimate(part.expected))}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `;
+    }
+
+    function expectedUnits(part) {
+      const unitValue = Number(part.pointsAvailable);
+      return unitValue > 0 ? part.expected / unitValue : part.expected;
+    }
+
+    function productionLabel(label) {
+      return {
+        'Expected wins': 'Group wins',
+        'Expected draws': 'Group draws',
+        'Expected goals': 'Goals',
+      }[label] || label.replace('Expected ', '');
+    }
+
+    function formatEstimate(value) {
+      return value === null ? '-' : value.toFixed(1);
+    }
+
+    function formatProbability(value) {
+      if (value === '') {
+        return '-';
+      }
+      return `${(Number(value) * 100).toFixed(1)}%`;
     }
 
     function rosterTeamName(teamName) {

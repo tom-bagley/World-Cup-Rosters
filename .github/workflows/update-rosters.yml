@@ -29,9 +29,12 @@ jobs:
         run: |
           python fetch_world_cup_rosters.py
           python build_roster_viewer.py
+          python update_goals_from_kalshi.py
+          python price_world_cup_teams.py
+          python sync_standings_expected_points.py
 
       - name: Commit updated roster files
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "Update World Cup roster data"
-          file_pattern: "world_cup_rosters.csv index.html"
+          commit_message: "Update World Cup roster and projection data"
+          file_pattern: "world_cup_rosters.csv index.html team_odds.csv team_prices.csv standings.html"
