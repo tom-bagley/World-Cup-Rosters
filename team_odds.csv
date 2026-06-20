@@ -1,49 +1,49 @@
 group,team,group_stage_odds,r16_odds,qf_odds,sf_odds,final_odds,champion_odds,expected_group_wins,expected_group_draws,expected_group_goals,expected_group_goals_source,stage_odds_source,expected_group_wins_source,expected_group_draws_source
-H,Spain,-4700,-276,-131,+129,+276,+540,1.512,0.299,13.365,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
-I,France,-10550,-587,-177,+107,+204,+446,1.436,0.310,11.500,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
-L,England,-9750,-479,-159,+146,+272,+579,1.582,0.268,10.350,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
-K,Portugal,-1600,-219,+110,+214,+423,+1033,1.291,0.385,11.405,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
-J,Argentina,-9950,-279,-145,+148,+337,+857,0.821,0.114,10.805,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
-C,Brazil,-3840,-194,+126,+272,+557,+1415,1.569,0.251,10.570,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
-E,Germany,-6100,-221,+200,+377,+1062,+2557,1.213,0.438,18.500,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
-F,Netherlands,-1029,-104,+187,+465,+1377,+2643,1.301,0.400,7.440,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
-I,Norway,-3780,-149,+213,+471,+1193,+2671,0.637,0.501,5.500,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
-G,Belgium,-2500,-185,+160,+384,+530,+1056,1.451,0.350,8.960,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
-K,Colombia,-3157,-162,+143,+280,+744,+3157,0.914,0.481,5.695,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
-C,Morocco,-1231,-103,+204,+432,+826,+2267,1.333,0.428,6.435,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
-D,USA,-6400,-200,+183,+509,+1293,+2686,1.025,0.458,8.795,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
-B,Switzerland,-9250,-156,+253,+750,+1069,+2238,0.389,0.310,8.055,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
-H,Uruguay,-466,+147,+262,+466,+1005,+4540,0.816,0.438,5.285,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
-F,Japan,-576,+165,+403,+1408,+3167,+6433,1.083,0.498,5.225,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
-A,Mexico,-20300,-200,+240,+603,+1357,+2814,0.462,0.249,6.085,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
-E,Ecuador,-438,+150,+313,+412,+552,+1244,1.067,0.321,6.330,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
-D,Turkiye,-103,+290,+652,+1094,+4975,+20200,0.816,0.527,4.780,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
-L,Croatia,-447,-110,+222,+327,+591,+1282,1.240,0.470,5.310,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
-I,Senegal,-216,+211,+503,+1227,+3880,+9850,1.048,0.440,4.680,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
-F,Sweden,-1758,+142,+278,+487,+962,+4360,0.490,0.510,1.015,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
-J,Austria,-767,+142,+462,+1200,+10300,+20700,0.000,0.000,1.855,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
-B,Canada,-20200,-114,+464,+1745,+6667,+20200,0.300,0.310,2.155,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
-C,Scotland,-493,+176,+334,+465,+835,+2600,0.300,0.440,3.245,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
-E,Cote d'Ivoire,-1585,+141,+421,+776,+995,+7200,1.022,0.297,6.560,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
-A,Czechia,+229,+520,+843,+3517,+7133,+21600,0.289,0.249,3.075,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
-D,Paraguay,+134,+368,+900,+5400,+10900,+21900,0.685,0.563,4.335,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
-G,Egypt,-591,+126,+327,+518,+1075,+5775,1.069,0.520,4.575,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
-L,Ghana,-318,+177,+334,+423,+820,+2456,0.220,0.379,2.735,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
-J,Algeria,-137,+308,+731,+2060,+10700,+21500,0.612,0.224,4.630,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
-A,Korea Republic,-1313,+121,+393,+960,+4140,+10500,0.602,0.234,5.680,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
-B,Bosnia and Herzegovina,-281,+207,+372,+650,+1400,+1494,0.688,0.186,4.630,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
-F,Tunisia,+1011,+2400,+3233,+6567,+9900,+19900,0.228,0.387,1.840,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
-D,Australia,-767,+142,+462,+1200,+10300,+20700,0.453,0.493,4.855,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
-G,Iran,+101,+305,+632,+1235,+11250,+22600,0.371,0.490,,model,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
-K,DR Congo,-196,+302,+676,+838,+2150,+22400,0.590,0.478,3.990,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
-H,Saudi Arabia,+101,+433,+854,+1105,+1172,+1331,0.448,0.338,2.475,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
-A,South Africa,+330,+727,+1032,+7067,+10650,+21400,0.164,0.234,1.440,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
-L,Panama,+524,+1016,+2550,+4140,+10500,+21100,0.220,0.359,1.615,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
-H,Cape Verde,-101,+509,+905,+6600,+9950,+20000,0.448,0.478,2.405,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
-B,Qatar,+621,+2512,+4080,+5125,+6867,+20800,0.126,0.186,0.620,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
-K,Uzbekistan,+182,+303,+398,+452,+747,+1714,0.342,0.382,2.000,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
-G,New Zealand,+239,+900,+3900,+6567,+9900,+19900,0.240,0.380,,model,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
-I,Iraq,+925,+1608,+2829,+5025,+10150,+20400,0.129,0.249,0.820,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
-J,Jordan,+617,+2500,+4060,+5100,+10300,+20700,0.229,0.338,1.215,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
-E,Curacao,+1950,+4000,+5025,+6733,+10150,+20400,0.080,0.180,1.605,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
-C,Haiti,+671,+800,+2986,+4220,+5300,+21500,0.119,0.239,1.585,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
+H,Spain,-3083,-275,-125,+136,+298,+582,1.512,0.299,13.420,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
+I,France,-7267,-439,-160,+112,+203,+426,1.433,0.318,11.650,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
+L,England,-6400,-474,-147,+157,+298,+650,1.592,0.258,10.470,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
+K,Portugal,-1625,-214,+111,+234,+459,+1194,1.292,0.379,11.440,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
+J,Argentina,-6733,-266,-150,+141,+327,+791,0.821,0.114,10.635,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
+C,Brazil,-19000,-203,+127,+298,+516,+1264,0.711,0.174,7.745,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
+E,Germany,-6100,-265,+170,+313,+745,+1967,1.217,0.446,16.990,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
+F,Netherlands,-1012,-110,+178,+425,+1012,+1790,1.318,0.386,7.475,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
+I,Norway,-3920,-158,+209,+474,+1156,+2412,0.635,0.513,5.535,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
+G,Belgium,-2250,-172,+189,+548,+840,+2586,1.467,0.342,8.915,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
+K,Colombia,-2412,-134,+214,+548,+1240,+2771,0.919,0.475,5.780,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
+C,Morocco,-9500,-123,+182,+465,+1180,+3740,0.821,0.124,5.905,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
+D,USA,-21900,-437,+110,+378,+1275,+2344,0.472,0.228,9.195,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
+B,Switzerland,-5100,-145,+333,+1200,+1980,+6833,0.393,0.313,8.030,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
+H,Uruguay,-438,+172,+284,+552,+835,+4200,0.823,0.440,5.430,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
+F,Japan,-586,+176,+485,+1558,+3880,+9850,1.068,0.505,5.220,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
+A,Mexico,-19600,-223,+252,+579,+1307,+2714,0.497,0.236,6.425,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
+E,Ecuador,-431,+188,+491,+762,+2200,+5075,1.045,0.338,6.335,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
+D,Turkiye,+3317,+4000,+5025,+6733,+10150,+20400,0.299,0.228,3.125,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
+L,Croatia,-363,+158,+453,+765,+2388,+6533,1.220,0.474,5.235,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
+I,Senegal,-188,+232,+684,+2078,+4800,+9700,1.046,0.440,4.680,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
+F,Sweden,-1558,+202,+469,+1227,+1709,+4875,0.486,0.505,0.940,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
+J,Austria,-1050,+229,+1379,+2857,+10250,+20600,0.000,0.000,0.965,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
+B,Canada,-20600,-107,+547,+1782,+4040,+10250,0.294,0.313,2.225,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
+C,Scotland,-200,+391,+929,+1443,+2300,+5300,0.114,0.174,2.885,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
+E,Cote d'Ivoire,-1900,+190,+809,+1718,+2757,+6567,1.013,0.296,6.360,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
+A,Czechia,+223,+614,+1194,+2857,+6800,+20600,0.266,0.236,3.265,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
+D,Paraguay,-469,+226,+1227,+3880,+9850,+19800,0.350,0.419,4.900,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
+G,Egypt,-581,+145,+539,+744,+905,+3417,1.072,0.519,4.745,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
+L,Ghana,-294,+414,+1133,+2983,+4525,+18400,0.227,0.385,2.835,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
+J,Algeria,-129,+400,+983,+1850,+9650,+19400,0.618,0.226,4.605,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
+A,Korea Republic,-1515,+144,+536,+2000,+4100,+10400,0.602,0.234,5.500,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
+B,Bosnia and Herzegovina,-202,+503,+1069,+1978,+3017,+6133,0.672,0.194,4.485,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
+F,Tunisia,+871,+2167,+2814,+6700,+10100,+20300,0.237,0.386,1.800,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
+D,Australia,-1050,+229,+1379,+2857,+10250,+20600,0.232,0.419,3.965,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
+G,Iran,+130,+454,+1764,+2829,+10150,+20400,0.361,0.491,,model,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
+K,DR Congo,-182,+352,+843,+1106,+5325,+21600,0.596,0.465,4.015,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
+H,Saudi Arabia,+115,+578,+1569,+2612,+3000,+7133,0.438,0.348,2.565,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
+A,South Africa,+532,+1533,+2700,+6433,+9700,+19500,0.164,0.234,1.625,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
+L,Panama,+818,+1583,+2425,+3940,+10000,+20100,0.228,0.347,1.795,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
+H,Cape Verde,+123,+989,+2200,+6800,+10250,+20600,0.439,0.490,2.385,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
+B,Qatar,+643,+2500,+4060,+5100,+6833,+20700,0.134,0.194,0.675,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
+K,Uzbekistan,+310,+719,+1153,+1538,+2943,+5225,0.349,0.369,1.990,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
+G,New Zealand,+262,+1006,+3217,+6533,+9850,+19800,0.240,0.370,,model,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
+I,Iraq,+1247,+1920,+2425,+4950,+10000,+20100,0.128,0.245,0.815,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
+J,Jordan,+412,+817,+1367,+1471,+10900,+21900,0.220,0.341,1.310,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
+E,Curacao,+1745,+3960,+4975,+6667,+10050,+20200,0.090,0.189,1.680,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
+C,Haiti,+3317,+4000,+5025,+6733,+10150,+20400,0.055,0.124,1.110,kalshi_tournament_goals_minus_espn_actuals,kalshi_stage_of_elimination,kalshi_remaining_games,kalshi_remaining_games
