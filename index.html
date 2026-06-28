@@ -522,7 +522,9 @@
     const teamAliases = {
       'Bosnia and Herzegovina': ['Bosnia-Herzegovina'],
       'Czech Republic': ['Czechia'],
+      'DR Congo': ['Congo DR'],
       'South Korea': ['Korea Republic'],
+      Turkey: ['Turkiye'],
       'United States': ['USA'],
     };
     let espnMatches = [];
@@ -795,6 +797,26 @@
         .trim();
     }
 
+    function teamFromUrl() {
+      const requestedTeam = new URLSearchParams(window.location.search).get('team');
+      if (!requestedTeam) {
+        return '';
+      }
+
+      const options = [...teamSelect.options];
+      const exactMatch = options.find(option => option.value === requestedTeam);
+      if (exactMatch) {
+        return exactMatch.value;
+      }
+
+      const normalizedRequestedTeam = normalize(requestedTeam);
+      const aliasMatch = options.find(option => {
+        const candidates = [option.value, ...(teamAliases[option.value] || [])].map(normalize);
+        return candidates.includes(normalizedRequestedTeam);
+      });
+      return aliasMatch?.value || '';
+    }
+
     async function fetchScoreboard() {
       try {
         const response = await fetch(ESPN_SCOREBOARD_URL, { cache: 'no-store' });
@@ -940,6 +962,11 @@
         ? `<img class="club-logo" src="${escapeHtml(row.clubLogoUrl)}" alt="" loading="lazy">`
         : '';
       return `<span class="club">${logo}<span>${linkMarkup(row.club, row.clubUrl)}</span></span>`;
+    }
+
+    const initialTeam = teamFromUrl();
+    if (initialTeam) {
+      teamSelect.value = initialTeam;
     }
 
     teamSelect.addEventListener('change', event => renderTeam(event.target.value));
